@@ -1,3 +1,31 @@
+// Profile image loading handler
+const profileImg = document.getElementById('profile-img');
+const profilePlaceholder = document.getElementById('profile-placeholder');
+
+if (profileImg) {
+    profileImg.addEventListener('load', () => {
+        profileImg.classList.add('loaded');
+        if (profilePlaceholder) {
+            profilePlaceholder.style.display = 'none';
+        }
+    });
+    
+    profileImg.addEventListener('error', () => {
+        // If image fails to load, show placeholder
+        if (profilePlaceholder) {
+            profilePlaceholder.style.display = 'flex';
+        }
+    });
+    
+    // Check if image is already loaded (cached)
+    if (profileImg.complete && profileImg.naturalHeight !== 0) {
+        profileImg.classList.add('loaded');
+        if (profilePlaceholder) {
+            profilePlaceholder.style.display = 'none';
+        }
+    }
+}
+
 // Smooth scrolling for navigation links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
