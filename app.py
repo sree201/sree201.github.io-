@@ -28,7 +28,7 @@ from flask_login import (
     logout_user,
 )
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import func, select, or_, not_
+from sqlalchemy import func, not_, or_, select
 from werkzeug.security import check_password_hash, generate_password_hash
 
 # Load environment variables from .env (if present)
@@ -43,9 +43,7 @@ device_auth_state = {}
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", secrets.token_hex(16))
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
-    "DATABASE_URL", "sqlite:///ccna_labs.db"
-)
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", "sqlite:///ccna_labs.db")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
@@ -69,9 +67,7 @@ class User(UserMixin, db.Model):
     is_admin = db.Column(db.Boolean, default=False)
 
     # Relationships
-    user_labs = db.relationship(
-        "UserLab", backref="user", lazy=True, cascade="all, delete-orphan"
-    )
+    user_labs = db.relationship("UserLab", backref="user", lazy=True, cascade="all, delete-orphan")
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -89,16 +85,14 @@ class Lab(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text)
-    difficulty = db.Column(
-        db.String(20), default="Beginner"
-    )  # Beginner, Intermediate, Advanced
+    difficulty = db.Column(db.String(20), default="Beginner")  # Beginner, Intermediate, Advanced
     category = db.Column(db.String(100))  # Routing, Switching, Security, etc.
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     is_active = db.Column(db.Boolean, default=True)
 
     # Lab configuration (JSON stored as string or use JSON field if available)
     lab_config = db.Column(db.Text)  # JSON string with device configurations
-    
+
     # New fields in Lab model:
     lab_number = db.Column(db.Integer, default=0)
     full_description = db.Column(db.Text)
@@ -106,9 +100,7 @@ class Lab(db.Model):
 
     # Relationships
     user_labs = db.relationship("UserLab", backref="lab", lazy=True)
-    devices = db.relationship(
-        "LabDevice", backref="lab", lazy=True, cascade="all, delete-orphan"
-    )
+    devices = db.relationship("LabDevice", backref="lab", lazy=True, cascade="all, delete-orphan")
 
 
 class LabDevice(db.Model):
@@ -130,9 +122,7 @@ class UserLab(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     lab_id = db.Column(db.Integer, db.ForeignKey("lab.id"), nullable=False)
-    status = db.Column(
-        db.String(20), default="Not Started"
-    )  # Not Started, In Progress, Completed
+    status = db.Column(db.String(20), default="Not Started")  # Not Started, In Progress, Completed
     started_at = db.Column(db.DateTime)
     completed_at = db.Column(db.DateTime)
     score = db.Column(db.Integer)  # 0-100
@@ -224,9 +214,7 @@ def logout():
 def dashboard():
     """User dashboard"""
     # Get user's labs
-    user_labs = db.session.scalars(
-        select(UserLab).filter_by(user_id=current_user.id)
-    ).all()
+    user_labs = db.session.scalars(select(UserLab).filter_by(user_id=current_user.id)).all()
 
     # Get all available labs
     available_labs = db.session.scalars(select(Lab).filter_by(is_active=True)).all()
@@ -264,7 +252,7 @@ def build_lab():
         topic = request.form.get("topic")
         if topic:
             return redirect(url_for("select_subtopics", topic=topic))
-    
+
     return render_template("build_lab.html")
 
 
@@ -276,13 +264,9 @@ def select_subtopics(topic):
         subtopics = request.form.getlist("subtopics")
         difficulty = request.form.get("difficulty")
         if subtopics and difficulty:
-            session["lab_preferences"] = {
-                "topic": topic,
-                "subtopics": subtopics,
-                "difficulty": difficulty
-            }
+            session["lab_preferences"] = {"topic": topic, "subtopics": subtopics, "difficulty": difficulty}
             return redirect(url_for("lab_list", topic=topic, difficulty=difficulty))
-    
+
     # Define sub-topics for each topic
     subtopics_map = {
         "networking": [
@@ -296,7 +280,7 @@ def select_subtopics(topic):
             "BGP & Routing Protocols",
             "VPC & Cloud Networking",
             "Network Troubleshooting Tools",
-            "Software Defined Networking (SDN)"
+            "Software Defined Networking (SDN)",
         ],
         "linux": [
             "Command Line Basics",
@@ -309,9 +293,8 @@ def select_subtopics(topic):
             "Package Management (apt/yum)",
             "Linux Security & Hardening",
             "I/O Redirection & Pipelines",
-            "Kernel Basics"
-
-        ], # type: ignore
+            "Kernel Basics",
+        ],  # type: ignore
         "docker": [
             "Image Creation & Dockerfiles",
             "Docker Swarm",
@@ -322,7 +305,7 @@ def select_subtopics(topic):
             "Multi-stage Builds",
             "Docker Compose",
             "Docker Volumes & Persistence",
-            "Docker Engine Internals"
+            "Docker Engine Internals",
         ],
         "kubernetes": [
             "Pods & Containers",
@@ -334,10 +317,10 @@ def select_subtopics(topic):
             "Helm Charts",
             "Kubernetes Networking",
             "RBAC & Security",
-            "Monitoring & Logging"
-        ]
+            "Monitoring & Logging",
+        ],
     }
-    
+
     subtopics = subtopics_map.get(topic.lower(), [])
     return render_template("select_subtopics.html", topic=topic, subtopics=subtopics)
 
@@ -347,17 +330,17 @@ def select_subtopics(topic):
 def lab_list(topic):
     """Lab listing page with selected topic and difficulty"""
     difficulty = request.args.get("difficulty", "Beginner")
-    
+
     # Get labs based on topic and difficulty
     labs_query = select(Lab).filter_by(is_active=True)
-    
+
     # Filter by difficulty if provided
     if difficulty:
         labs_query = labs_query.filter_by(difficulty=difficulty)
-    
+
     # Filter by category/topic (simplified - you may want to add topic field to Lab model)
     labs_list = db.session.scalars(labs_query).all()
-    
+
     # For now, we'll show all labs and let the frontend filter
     return render_template("lab_list.html", topic=topic, difficulty=difficulty, labs=labs_list)
 
@@ -371,9 +354,7 @@ def lab_detail(lab_id):
         abort(404)
 
     # Get or create user lab session
-    user_lab = db.session.scalars(
-        select(UserLab).filter_by(user_id=current_user.id, lab_id=lab_id)
-    ).first()
+    user_lab = db.session.scalars(select(UserLab).filter_by(user_id=current_user.id, lab_id=lab_id)).first()
     if not user_lab:
         user_lab = UserLab(
             user_id=current_user.id,
@@ -393,9 +374,8 @@ def lab_detail(lab_id):
         .filter(not_((LabDevice.device_name == "R3") & (LabDevice.vendor == "Generic") & (LabDevice.model == "v1")))
     ).all()
 
-    return render_template(
-        "lab_detail.html", lab=lab, devices=devices, user_lab=user_lab
-    )
+    return render_template("lab_detail.html", lab=lab, devices=devices, user_lab=user_lab)
+
 
 # THIS ROUTE SHOULD ALSO EXIST:
 @app.route("/lab/<int:lab_id>/start")
@@ -406,9 +386,7 @@ def lab_start(lab_id):
     if lab is None:
         abort(404)
     # Get or create user lab session
-    user_lab = db.session.scalars(
-        select(UserLab).filter_by(user_id=current_user.id, lab_id=lab_id)
-    ).first()
+    user_lab = db.session.scalars(select(UserLab).filter_by(user_id=current_user.id, lab_id=lab_id)).first()
     if not user_lab:
         user_lab = UserLab(
             user_id=current_user.id,
@@ -427,9 +405,8 @@ def lab_start(lab_id):
         .filter(not_(LabDevice.device_name.like("ISOLATED%")))
     ).all()
 
-    return render_template(
-        "lab_terminal.html", lab=lab, devices=devices, user_lab=user_lab
-    )
+    return render_template("lab_terminal.html", lab=lab, devices=devices, user_lab=user_lab)
+
 
 @app.route("/api/lab/<int:lab_id>/devices")
 @login_required
@@ -531,21 +508,9 @@ def lab_topology(lab_id):
             positions = None
     else:
         # Auto generate a simple topology:
-        routers = [
-            d.device_name
-            for d in devices
-            if d.device_type and d.device_type.lower() == "router"
-        ]
-        switches = [
-            d.device_name
-            for d in devices
-            if d.device_type and d.device_type.lower() == "switch"
-        ]
-        pcs = [
-            d.device_name
-            for d in devices
-            if d.device_type and d.device_type.lower() == "pc"
-        ]
+        routers = [d.device_name for d in devices if d.device_type and d.device_type.lower() == "router"]
+        switches = [d.device_name for d in devices if d.device_type and d.device_type.lower() == "switch"]
+        pcs = [d.device_name for d in devices if d.device_type and d.device_type.lower() == "pc"]
 
         # Connect routers in a chain (if >1)
         for i in range(len(routers) - 1):
@@ -587,10 +552,7 @@ def save_lab_topology(lab_id):
         return jsonify({"success": False, "error": "edges list required"}), 400
 
     # validate and convert to link structures with optional metadata
-    devices = [
-        d.device_name
-        for d in db.session.scalars(select(LabDevice).filter_by(lab_id=lab_id)).all()
-    ]
+    devices = [d.device_name for d in db.session.scalars(select(LabDevice).filter_by(lab_id=lab_id)).all()]
     cleaned = []
     for e in edges:
         if not isinstance(e, dict):
@@ -617,11 +579,7 @@ def save_lab_topology(lab_id):
     if positions and isinstance(positions, dict):
         cfg["positions"] = positions
     # optionally accept jitter seed for deterministic jitter sampling
-    seed_val = (
-        data.get("jitter_seed")
-        if data.get("jitter_seed") is not None
-        else data.get("seed")
-    )
+    seed_val = data.get("jitter_seed") if data.get("jitter_seed") is not None else data.get("seed")
     if seed_val is not None:
         cfg["jitter_seed"] = seed_val
     lab.lab_config = json.dumps(cfg)
@@ -643,11 +601,7 @@ def execute_command(lab_id, device_name):
     lab = db.session.get(Lab, lab_id)
     if lab is None:
         abort(404)
-    device = (
-        db.session.query(LabDevice)
-        .filter_by(lab_id=lab_id, device_name=device_name)
-        .first()
-    )
+    device = db.session.query(LabDevice).filter_by(lab_id=lab_id, device_name=device_name).first()
     if device is None:
         abort(404)
 
@@ -660,12 +614,12 @@ def execute_command(lab_id, device_name):
         device_auth_state[current_user.id] = {}
     if lab_id not in device_auth_state[current_user.id]:
         device_auth_state[current_user.id][lab_id] = {}
-    
+
     is_authenticated = device_auth_state[current_user.id][lab_id].get(device_name, False)
-    
+
     # Check if device requires authentication (routers and switches)
     requires_auth = device.device_type.lower() in ["router", "switch"]
-    
+
     # Handle login commands
     command_lower = command.strip().lower()
     if requires_auth and not is_authenticated:
@@ -673,61 +627,66 @@ def execute_command(lab_id, device_name):
             # Check password (default: "cisco" for demo)
             if password == "cisco" or password == "":
                 device_auth_state[current_user.id][lab_id][device_name] = True
-                return jsonify({
-                    "success": True, 
-                    "output": "", 
-                    "device": device_name,
-                    "authenticated": True
-                })
+                return jsonify({"success": True, "output": "", "device": device_name, "authenticated": True})
             else:
-                return jsonify({
-                    "success": False, 
-                    "output": "% Access denied", 
-                    "device": device_name,
-                    "authenticated": False,
-                    "requires_password": True
-                })
+                return jsonify(
+                    {
+                        "success": False,
+                        "output": "% Access denied",
+                        "device": device_name,
+                        "authenticated": False,
+                        "requires_password": True,
+                    }
+                )
         elif command_lower == "":
             # Empty command - show prompt
-            return jsonify({
-                "success": True,
-                "output": "",
-                "device": device_name,
-                "authenticated": False,
-                "prompt": f"{device_name}>"
-            })
+            return jsonify(
+                {
+                    "success": True,
+                    "output": "",
+                    "device": device_name,
+                    "authenticated": False,
+                    "prompt": f"{device_name}>",
+                }
+            )
         else:
             # Allow certain informational/diagnostic commands without enable
             if command_lower.startswith(("ping", "traceroute")):
                 result = simulate_network_command(device, command)
-                return jsonify({
-                    "success": True,
-                    "output": result,
-                    "device": device_name,
-                    "authenticated": False
-                })
+                return jsonify(
+                    {
+                        "success": True,
+                        "output": result,
+                        "device": device_name,
+                        "authenticated": False,
+                    }
+                )
             # Command requires authentication
-            return jsonify({
-                "success": False,
-                "output": f"% Access denied. Use 'enable' to enter privileged mode.",
-                "device": device_name,
-                "authenticated": False
-            })
-    
+            return jsonify(
+                {
+                    "success": False,
+                    "output": "% Access denied. Use 'enable' to enter privileged mode.",
+                    "device": device_name,
+                    "authenticated": False,
+                }
+            )
+
     # Simulate command execution
     # In a real implementation, this would interface with network emulation software
     result = simulate_network_command(device, command)
-    
+
     # Handle disable command
     if command_lower in ["disable", "dis"] and is_authenticated:
         device_auth_state[current_user.id][lab_id][device_name] = False
 
-    return jsonify({
-        "success": True, 
-        "output": result, 
-        "device": device_name,
-        "authenticated": is_authenticated
-    })
+    return jsonify(
+        {
+            "success": True,
+            "output": result,
+            "device": device_name,
+            "authenticated": is_authenticated,
+        }
+    )
 
 
 # Device configuration endpoints (interfaces/hostname)
@@ -738,11 +697,7 @@ def get_device_config(lab_id, device_name):
     lab = db.session.get(Lab, lab_id)
     if lab is None:
         abort(404)
-    device = (
-        db.session.query(LabDevice)
-        .filter_by(lab_id=lab_id, device_name=device_name)
-        .first()
-    )
+    device = db.session.query(LabDevice).filter_by(lab_id=lab_id, device_name=device_name).first()
     if device is None:
         abort(404)
     # parse interfaces JSON
@@ -760,9 +715,7 @@ def get_device_config(lab_id, device_name):
             parts = firstline.split()
             if len(parts) >= 2:
                 hostname = parts[1]
-    return jsonify(
-        {"device": device.device_name, "hostname": hostname, "interfaces": interfaces}
-    )
+    return jsonify({"device": device.device_name, "hostname": hostname, "interfaces": interfaces})
 
 
 @app.route("/api/lab/<int:lab_id>/device/<device_name>/config", methods=["POST"])
@@ -772,11 +725,7 @@ def set_device_config(lab_id, device_name):
     lab = db.session.get(Lab, lab_id)
     if lab is None:
         abort(404)
-    device = (
-        db.session.query(LabDevice)
-        .filter_by(lab_id=lab_id, device_name=device_name)
-        .first()
-    )
+    device = db.session.query(LabDevice).filter_by(lab_id=lab_id, device_name=device_name).first()
     if device is None:
         abort(404)
     data = request.get_json() or {}
@@ -823,9 +772,7 @@ def set_device_config(lab_id, device_name):
                 ip_norm = ""
                 ip_addr = ""
                 ip_net = ""
-            validated.append(
-                {"name": name, "ip": ip_norm, "address": ip_addr, "network": ip_net}
-            )
+            validated.append({"name": name, "ip": ip_norm, "address": ip_addr, "network": ip_net})
         if errors:
             return jsonify({"success": False, "errors": errors}), 400
         device.interfaces = json.dumps(validated)
@@ -838,9 +785,7 @@ def set_device_config(lab_id, device_name):
             lines.insert(0, f"hostname {hostname}")
         device.initial_config = "\n".join(lines)
     db.session.commit()
-    return jsonify(
-        {"success": True, "device": device.device_name, "hostname": hostname or None}
-    )
+    return jsonify({"success": True, "device": device.device_name, "hostname": hostname or None})
 
 
 # --- PC browser and DNS simulation endpoints ---
@@ -851,11 +796,7 @@ def pc_browser(lab_id, device_name):
     lab = db.session.get(Lab, lab_id)
     if lab is None:
         abort(404)
-    device = (
-        db.session.query(LabDevice)
-        .filter_by(lab_id=lab_id, device_name=device_name)
-        .first()
-    )
+    device = db.session.query(LabDevice).filter_by(lab_id=lab_id, device_name=device_name).first()
     if device is None:
         abort(404)
     if device.device_type.lower() != "pc":
@@ -937,7 +878,8 @@ def simulate_network_command(device, command):
 
     # Configuration mode commands
     elif command_lower.startswith("interface") or command_lower.startswith("int "):
-        return f"Entering interface configuration mode for {command.split()[-1] if len(command.split()) > 1 else 'interface'}"
+        name = command.split()[-1] if len(command.split()) > 1 else "interface"
+        return f"Entering interface configuration mode for {name}"
 
     elif command_lower.startswith("router ") or command_lower.startswith("router-"):
         protocol = command.split()[1] if len(command.split()) > 1 else "protocol"
@@ -972,9 +914,7 @@ def simulate_network_command(device, command):
         new_hostname = command.split()[1] if len(command.split()) > 1 else "router"
         return f"Hostname changed to {new_hostname}"
 
-    elif command_lower.startswith("router ospf") or command_lower.startswith(
-        "router-ospf"
-    ):
+    elif command_lower.startswith("router ospf") or command_lower.startswith("router-ospf"):
         return "Entering router OSPF configuration mode"
 
     elif command_lower.startswith("router eigrp"):
@@ -1042,14 +982,10 @@ def simulate_network_command(device, command):
                                     # fallback: scan strings inside dict
                                     for v in item.values():
                                         if isinstance(v, str):
-                                            for m in re.findall(
-                                                r"\b(?:\d{1,3}\.){3}\d{1,3}\b", v
-                                            ):
+                                            for m in re.findall(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", v):
                                                 ips.add(m)
                             elif isinstance(item, str):
-                                for m in re.findall(
-                                    r"\b(?:\d{1,3}\.){3}\d{1,3}\b", item
-                                ):
+                                for m in re.findall(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", item):
                                     ips.add(m)
                     else:
 
@@ -1061,9 +997,7 @@ def simulate_network_command(device, command):
                                 for item in obj:
                                     _walk(item)
                             elif isinstance(obj, str):
-                                for m in re.findall(
-                                    r"\b(?:\d{1,3}\.){3}\d{1,3}\b", obj
-                                ):
+                                for m in re.findall(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", obj):
                                     ips.add(m)
 
                         _walk(j)
@@ -1081,9 +1015,7 @@ def simulate_network_command(device, command):
 
         # Build adjacency from lab_config.links if present, else auto-generate same as lab_topology
         lab = device.lab
-        devices = {
-            d.device_name: d for d in LabDevice.query.filter_by(lab_id=lab.id).all()
-        }
+        devices = {d.device_name: d for d in LabDevice.query.filter_by(lab_id=lab.id).all()}
         adj = collections.defaultdict(list)
         links = []
         try:
@@ -1100,31 +1032,14 @@ def simulate_network_command(device, command):
                     if a in devices and b in devices:
                         adj[a].append(b)
                         adj[b].append(a)
-                elif (
-                    isinstance(link, (list, tuple))
-                    and len(link) >= 2
-                    and link[0] in devices
-                    and link[1] in devices
-                ):
+                elif isinstance(link, (list, tuple)) and len(link) >= 2 and link[0] in devices and link[1] in devices:
                     adj[link[0]].append(link[1])
                     adj[link[1]].append(link[0])
         else:
             # Auto-generate connections (same rules as lab_topology)
-            routers = [
-                d.device_name
-                for d in devices.values()
-                if d.device_type and d.device_type.lower() == "router"
-            ]
-            switches = [
-                d.device_name
-                for d in devices.values()
-                if d.device_type and d.device_type.lower() == "switch"
-            ]
-            pcs = [
-                d.device_name
-                for d in devices.values()
-                if d.device_type and d.device_type.lower() == "pc"
-            ]
+            routers = [d.device_name for d in devices.values() if d.device_type and d.device_type.lower() == "router"]
+            switches = [d.device_name for d in devices.values() if d.device_type and d.device_type.lower() == "switch"]
+            pcs = [d.device_name for d in devices.values() if d.device_type and d.device_type.lower() == "pc"]
             for i in range(len(routers) - 1):
                 a, b = routers[i], routers[i + 1]
                 adj[a].append(b)
@@ -1194,9 +1109,7 @@ Destination host unreachable"""
             return f"% Unknown host {target}\n"
 
         lab = device.lab
-        devices = {
-            d.device_name: d for d in LabDevice.query.filter_by(lab_id=lab.id).all()
-        }
+        devices = {d.device_name: d for d in LabDevice.query.filter_by(lab_id=lab.id).all()}
         adj = collections.defaultdict(list)
         links = []
         try:
@@ -1212,31 +1125,14 @@ Destination host unreachable"""
                     if a in devices and b in devices:
                         adj[a].append(b)
                         adj[b].append(a)
-                elif (
-                    isinstance(link, (list, tuple))
-                    and len(link) >= 2
-                    and link[0] in devices
-                    and link[1] in devices
-                ):
+                elif isinstance(link, (list, tuple)) and len(link) >= 2 and link[0] in devices and link[1] in devices:
                     adj[link[0]].append(link[1])
                     adj[link[1]].append(link[0])
         else:
             # simple fallback
-            routers = [
-                d.device_name
-                for d in devices.values()
-                if d.device_type and d.device_type.lower() == "router"
-            ]
-            switches = [
-                d.device_name
-                for d in devices.values()
-                if d.device_type and d.device_type.lower() == "switch"
-            ]
-            pcs = [
-                d.device_name
-                for d in devices.values()
-                if d.device_type and d.device_type.lower() == "pc"
-            ]
+            routers = [d.device_name for d in devices.values() if d.device_type and d.device_type.lower() == "router"]
+            switches = [d.device_name for d in devices.values() if d.device_type and d.device_type.lower() == "switch"]
+            pcs = [d.device_name for d in devices.values() if d.device_type and d.device_type.lower() == "pc"]
             for i in range(len(routers) - 1):
                 a, b = routers[i], routers[i + 1]
                 adj[a].append(b)
@@ -1281,14 +1177,10 @@ Destination host unreachable"""
                                 else:
                                     for v in item.values():
                                         if isinstance(v, str):
-                                            for m in re.findall(
-                                                r"\b(?:\d{1,3}\.){3}\d{1,3}\b", v
-                                            ):
+                                            for m in re.findall(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", v):
                                                 ips.add(m)
                             elif isinstance(item, str):
-                                for m in re.findall(
-                                    r"\b(?:\d{1,3}\.){3}\d{1,3}\b", item
-                                ):
+                                for m in re.findall(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", item):
                                     ips.add(m)
                     else:
 
@@ -1300,9 +1192,7 @@ Destination host unreachable"""
                                 for item in obj:
                                     _walk(item)
                             elif isinstance(obj, str):
-                                for m in re.findall(
-                                    r"\b(?:\d{1,3}\.){3}\d{1,3}\b", obj
-                                ):
+                                for m in re.findall(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", obj):
                                     ips.add(m)
 
                         _walk(j)
@@ -1347,9 +1237,7 @@ Destination host unreachable"""
                         ):
                             return link
                     elif isinstance(link, (list, tuple)) and len(link) >= 2:
-                        if (link[0] == a and link[1] == b) or (
-                            link[0] == b and link[1] == a
-                        ):
+                        if (link[0] == a and link[1] == b) or (link[0] == b and link[1] == a):
                             return None
                 return None
 
@@ -1386,20 +1274,12 @@ Destination host unreachable"""
                             jval = 0
                         latency = max(1, base_cost + jval)
                     # interface labels
-                    if (
-                        isinstance(link_meta, dict)
-                        and link_meta.get("src_if")
-                        and link_meta.get("dst_if")
-                    ):
-                        iface_info = (
-                            f" ({link_meta.get('src_if')}↔{link_meta.get('dst_if')})"
-                        )
+                    if isinstance(link_meta, dict) and link_meta.get("src_if") and link_meta.get("dst_if"):
+                        iface_info = f" ({link_meta.get('src_if')}↔{link_meta.get('dst_if')})"
                 a = max(1, latency - 1)
                 b = latency
                 c = latency + 1
-                lines.append(
-                    f"  {hop} {n}{iface_info} [simulated] {a} msec {b} msec {c} msec"
-                )
+                lines.append(f"  {hop} {n}{iface_info} [simulated] {a} msec {b} msec {c} msec")
                 hop += 1
             return "\n".join(lines)
         else:
@@ -1410,7 +1290,7 @@ Destination host unreachable"""
         or command_lower.startswith("copy run start")
         or command_lower == "wr"
     ):
-        return """Destination filename [startup-config]? 
+        return """Destination filename [startup-config]?
 Building configuration...
 [OK]"""
 
@@ -1424,7 +1304,9 @@ Building configuration...
 
     # Default: unknown command
     else:
-        return f"% Invalid input detected at '^' marker.\n\nUnknown command: {command}\nType '?' for available commands."
+        return (
+            f"% Invalid input detected at '^' marker.\n\nUnknown command: {command}\nType '?' for available commands."
+        )
 
 
 def handle_show_command(device, command_lower):
@@ -1432,17 +1314,17 @@ def handle_show_command(device, command_lower):
 
     # Show version
     if "version" in command_lower:
-        return f"""Cisco IOS Software, {device.model} Software ({device.model.replace(' ', '_')}-ADVENTERPRISEK9-M), Version 15.4(3)S2
-Copyright (c) 1986-2015 by Cisco Systems, Inc.
-Compiled Thu 26-Mar-15 14:31 by prod_rel_team
-
-ROM: System Bootstrap, Version 15.0(1r)SG16, RELEASE SOFTWARE (fc1)
-
-{device.device_name} uptime is 2 weeks, 3 days, 1 hour, 25 minutes
-System returned to ROM by power-on
-System image file is "bootflash:/isr4300-universalk9.154-3.S2.bin"
-Last reload type: Normal Reload
-"""
+        return (
+            f"Cisco IOS Software, {device.model} Software "
+            f"({device.model.replace(' ', '_')}-ADVENTERPRISEK9-M), Version 15.4(3)S2\n"
+            "Copyright (c) 1986-2015 by Cisco Systems, Inc.\n"
+            "Compiled Thu 26-Mar-15 14:31 by prod_rel_team\n\n"
+            "ROM: System Bootstrap, Version 15.0(1r)SG16, RELEASE SOFTWARE (fc1)\n\n"
+            f"{device.device_name} uptime is 2 weeks, 3 days, 1 hour, 25 minutes\n"
+            "System returned to ROM by power-on\n"
+            "System image file is \"bootflash:/isr4300-universalk9.154-3.S2.bin\"\n"
+            "Last reload type: Normal Reload\n"
+        )
 
     # Show IP interface brief
     elif "ip interface brief" in command_lower or "ip int brief" in command_lower:
@@ -1455,8 +1337,7 @@ Loopback0                    10.0.0.1        YES NVRAM  up                    up
 
     # Show running-config
     elif "running-config" in command_lower or (
-        "run" in command_lower
-        and "config" not in command_lower.replace("running-config", "")
+        "run" in command_lower and "config" not in command_lower.replace("running-config", "")
     ):
         return device.initial_config or "No configuration available"
 
@@ -1648,7 +1529,11 @@ Total Mac Addresses for this criterion: 4
 
     # Default show command
     else:
-        return "Command not fully simulated. Available show commands:\n  version, ip interface brief, running-config, ip route, vlan, ospf, eigrp, access-list, arp, cdp, spanning-tree, mac address-table"
+        return (
+            "Command not fully simulated. Available show commands:\n"
+            "  version, ip interface brief, running-config, ip route, vlan, ospf, eigrp, "
+            "access-list, arp, cdp, spanning-tree, mac address-table"
+        )
 
 
 def simulate_arista_command(device, command):
@@ -1695,7 +1580,8 @@ Management1      192.168.1.1/24     up             up              1500
         return "Entering configuration mode terminal"
 
     elif command_lower.startswith("interface") or command_lower.startswith("int "):
-        return f"Entering interface configuration mode for {command.split()[-1] if len(command.split()) > 1 else 'interface'}"
+        name = command.split()[-1] if len(command.split()) > 1 else "interface"
+        return f"Entering interface configuration mode for {name}"
 
     elif command_lower == "exit" or command_lower == "end":
         return ""
@@ -1719,21 +1605,16 @@ def cleanup_isolated_devices():
     """Remove all ISOLATED devices from all labs"""
     if not current_user.is_admin:
         return jsonify({"success": False, "error": "Admin access required"}), 403
-    
+
     isolated_devices = db.session.scalars(
-        select(LabDevice).filter(
-            or_(
-                LabDevice.device_type == "Isolated",
-                LabDevice.device_name.like("ISOLATED%")
-            )
-        )
+        select(LabDevice).filter(or_(LabDevice.device_type == "Isolated", LabDevice.device_name.like("ISOLATED%")))
     ).all()
-    
+
     count = len(isolated_devices)
     for device in isolated_devices:
         db.session.delete(device)
     db.session.commit()
-    
+
     return jsonify({"success": True, "removed": count})
 
 
@@ -1741,11 +1622,7 @@ def cleanup_isolated_devices():
 @login_required
 def save_lab_progress(lab_id):
     """Save user's lab progress"""
-    user_lab = (
-        db.session.query(UserLab)
-        .filter_by(user_id=current_user.id, lab_id=lab_id)
-        .first()
-    )
+    user_lab = db.session.query(UserLab).filter_by(user_id=current_user.id, lab_id=lab_id).first()
     if user_lab is None:
         abort(404)
     data = request.get_json()
@@ -1766,35 +1643,23 @@ def save_lab_progress(lab_id):
 def init_db():
     """Create database tables and sample data"""
     db.create_all()
-    
+
     # Remove all ISOLATED devices from all labs
     isolated_devices = db.session.scalars(
-        select(LabDevice).filter(
-            or_(
-                LabDevice.device_type == "Isolated",
-                LabDevice.device_name.like("ISOLATED%")
-            )
-        )
+        select(LabDevice).filter(or_(LabDevice.device_type == "Isolated", LabDevice.device_name.like("ISOLATED%")))
     ).all()
     for device in isolated_devices:
         db.session.delete(device)
-    
+
     # Remove R3 devices with Generic vendor and v1 model from Basic Router Configuration lab
-    basic_lab = db.session.scalars(
-        select(Lab).filter_by(title="Basic Router Configuration")
-    ).first()
+    basic_lab = db.session.scalars(select(Lab).filter_by(title="Basic Router Configuration")).first()
     if basic_lab:
         r3_devices = db.session.scalars(
-            select(LabDevice).filter_by(
-                lab_id=basic_lab.id,
-                device_name="R3",
-                vendor="Generic",
-                model="v1"
-            )
+            select(LabDevice).filter_by(lab_id=basic_lab.id, device_name="R3", vendor="Generic", model="v1")
         ).all()
         for device in r3_devices:
             db.session.delete(device)
-    
+
     db.session.commit()
 
     # Create sample labs if none exist
@@ -2280,14 +2145,10 @@ end""",
         db.session.commit()
 
     # Ensure key devices exist (idempotent) for Basic Router Configuration lab
-    basic_lab = db.session.scalars(
-        select(Lab).filter_by(title="Basic Router Configuration")
-    ).first()
+    basic_lab = db.session.scalars(select(Lab).filter_by(title="Basic Router Configuration")).first()
     if basic_lab:
         # Add R2 if missing
-        if not db.session.scalars(
-            select(LabDevice).filter_by(lab_id=basic_lab.id, device_name="R2")
-        ).first():
+        if not db.session.scalars(select(LabDevice).filter_by(lab_id=basic_lab.id, device_name="R2")).first():
             r2 = LabDevice(
                 lab=basic_lab,
                 device_name="R2",
@@ -2304,9 +2165,7 @@ end""",
             )
             db.session.add(r2)
         # Add SW1 if missing
-        if not db.session.scalars(
-            select(LabDevice).filter_by(lab_id=basic_lab.id, device_name="SW1")
-        ).first():
+        if not db.session.scalars(select(LabDevice).filter_by(lab_id=basic_lab.id, device_name="SW1")).first():
             sw1 = LabDevice(
                 lab=basic_lab,
                 device_name="SW1",
@@ -2326,9 +2185,7 @@ end""",
             )
             db.session.add(sw1)
         # Add PC1 if missing
-        if not db.session.scalars(
-            select(LabDevice).filter_by(lab_id=basic_lab.id, device_name="PC1")
-        ).first():
+        if not db.session.scalars(select(LabDevice).filter_by(lab_id=basic_lab.id, device_name="PC1")).first():
             pc1 = LabDevice(
                 lab=basic_lab,
                 device_name="PC1",
@@ -2355,10 +2212,8 @@ end""",
             # Skip R3 for Basic Router Configuration lab
             if lab.title == "Basic Router Configuration" and name == "R3":
                 continue
-                
-            if not db.session.scalars(
-                select(LabDevice).filter_by(lab_id=lab.id, device_name=name)
-            ).first():
+
+            if not db.session.scalars(select(LabDevice).filter_by(lab_id=lab.id, device_name=name)).first():
                 # heuristics for device type/vendor
                 if name.upper().startswith("R"):
                     dtype = "Router"
@@ -2394,13 +2249,9 @@ end""",
         db.session.commit()
 
     # Add router R1 to Arista lab (and link it to AR1) if missing
-    arista_lab = db.session.scalars(
-        select(Lab).filter_by(title="Arista Switch Configuration")
-    ).first()
+    arista_lab = db.session.scalars(select(Lab).filter_by(title="Arista Switch Configuration")).first()
     if arista_lab:
-        if not db.session.scalars(
-            select(LabDevice).filter_by(lab_id=arista_lab.id, device_name="R1")
-        ).first():
+        if not db.session.scalars(select(LabDevice).filter_by(lab_id=arista_lab.id, device_name="R1")).first():
             r1 = LabDevice(
                 lab=arista_lab,
                 device_name="R1",

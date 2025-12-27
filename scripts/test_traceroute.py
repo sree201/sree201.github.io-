@@ -52,18 +52,14 @@ with app.app_context():
                                 for item in obj:
                                     _walk(item)
                             elif isinstance(obj, str):
-                                for m in re.findall(
-                                    r"\b(?:\d{1,3}\.){3}\d{1,3}\b", obj
-                                ):
+                                for m in re.findall(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", obj):
                                     ips.add(m)
 
                         _walk(j)
                     except Exception:
                         pass
                 if dev.initial_config:
-                    for m in re.findall(
-                        r"\b(?:\d{1,3}\.){3}\d{1,3}\b", dev.initial_config
-                    ):
+                    for m in re.findall(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", dev.initial_config):
                         ips.add(m)
                 return ips
 
@@ -74,13 +70,13 @@ with app.app_context():
 
             adj = collections.defaultdict(list)
             if links:
-                for l in links:
-                    if isinstance(l, (list, tuple)) and len(l) >= 2:
-                        a, b = l[0], l[1]
+                for link in links:
+                    if isinstance(link, (list, tuple)) and len(link) >= 2:
+                        a, b = link[0], link[1]
                         adj[a].append(b)
                         adj[b].append(a)
-                    elif isinstance(l, dict):
-                        a, b = l.get("from"), l.get("to")
+                    elif isinstance(link, dict):
+                        a, b = link.get("from"), link.get("to")
                         if a and b:
                             adj[a].append(b)
                             adj[b].append(a)
@@ -104,24 +100,18 @@ with app.app_context():
                                 for item in obj:
                                     _walk(item)
                             elif isinstance(obj, str):
-                                for m in re.findall(
-                                    r"\b(?:\d{1,3}\.){3}\d{1,3}\b", obj
-                                ):
+                                for m in re.findall(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", obj):
                                     ips.add(m)
 
                         _walk(j)
                     except Exception:
                         pass
                 if dev.initial_config:
-                    for m in re.findall(
-                        r"\b(?:\d{1,3}\.){3}\d{1,3}\b", dev.initial_config
-                    ):
+                    for m in re.findall(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", dev.initial_config):
                         ips.add(m)
                 return ips
 
-            targets = [
-                name for name, d in devs.items() if target in _extract_ips_local(d)
-            ]
+            targets = [name for name, d in devs.items() if target in _extract_ips_local(d)]
             print("targets found for", target, ":", targets)
 
             # BFS
