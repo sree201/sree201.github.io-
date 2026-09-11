@@ -85,7 +85,7 @@ and `docs/CUSTOM_DOMAIN_SETUP.md` for the original setup notes.
 ## Contact
 
 - **Email**: srinath.koyi@applywizard.ai
-- **Location**: San Jose, CA, USA
+- **Location**: USA
 - **LinkedIn**: [Srinath](https://www.linkedin.com/in/srinath-k-6572389590s/)
 - **GitHub**: [Sree201](https://github.com/Sree201)
 

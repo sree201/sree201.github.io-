@@ -21,7 +21,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=20260911c">
+    <link rel="stylesheet" href="styles.css?v=20260911d">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <noscript><style>
         [data-reveal] { opacity: 1 !important; transform: none !important; }
@@ -81,7 +81,7 @@
         <canvas id="neural-canvas" class="neural-canvas"></canvas>
         <div class="container hero-inner">
             <div class="hero-content">
-                <p class="eyebrow" data-reveal><span class="eyebrow-dot"></span> Available for new opportunities &middot; San Jose, CA</p>
+                <p class="eyebrow" data-reveal><span class="eyebrow-dot"></span> Available for new opportunities &middot; USA</p>
                 <h1 class="hero-title" data-reveal>
                     Hi, I'm <span class="gradient-text">Srinath</span>
                 </h1>
@@ -96,7 +96,6 @@
                 <div class="hero-buttons" data-reveal>
                     <a href="#projects" class="btn btn-primary magnetic"><span>View My Work</span> <i class="fa-solid fa-arrow-right"></i></a>
                     <a href="#contact" class="btn btn-secondary magnetic"><span>Get In Touch</span></a>
-                    <a href="Srinath-Koyi-AI-ML-Resume.pdf" class="btn btn-ghost magnetic" download><span>Download Résumé</span> <i class="fa-solid fa-download"></i></a>
                 </div>
                 <div class="hero-stats" data-reveal>
                     <div class="hero-stat">
@@ -127,7 +126,7 @@
                     <span class="orbit-chip orbit-chip--6"><i class="fa-solid fa-robot"></i></span>
                 </div>
                 <div class="profile-image">
-                    <img src="profile-photo.jpg?v=20260911c" alt="Srinath - AI/ML Engineer" id="profile-img">
+                    <img src="profile-photo.jpg?v=20260911d" alt="Srinath - AI/ML Engineer" id="profile-img">
                     <div class="profile-placeholder" id="profile-placeholder">
                         <i class="fas fa-user"></i>
                     </div>
@@ -333,20 +332,21 @@
             <p class="section-eyebrow" data-reveal>03 &mdash; System Design</p>
             <h2 class="section-title" data-reveal>How I architect a <span class="gradient-text">RAG system</span></h2>
             <p class="section-lede" data-reveal>A representative pipeline I design and productionize — from raw documents to a validated, cited answer served over a REST API.</p>
+            <p class="pipeline-hint" data-reveal><i class="fa-solid fa-hand-pointer"></i> Click any stage for what it actually does &amp; where I've shipped it</p>
             <div class="pipeline" data-reveal>
-                <div class="pipeline-node"><i class="fa-solid fa-file-lines"></i><span>Ingestion</span></div>
+                <button type="button" class="pipeline-node" data-stage="ingestion" aria-haspopup="dialog" aria-controls="stage-modal"><i class="fa-solid fa-file-lines"></i><span>Ingestion</span></button>
                 <div class="pipeline-arrow"></div>
-                <div class="pipeline-node"><i class="fa-solid fa-scissors"></i><span>Chunking</span></div>
+                <button type="button" class="pipeline-node" data-stage="chunking" aria-haspopup="dialog" aria-controls="stage-modal"><i class="fa-solid fa-scissors"></i><span>Chunking</span></button>
                 <div class="pipeline-arrow"></div>
-                <div class="pipeline-node"><i class="fa-solid fa-shapes"></i><span>Embeddings</span></div>
+                <button type="button" class="pipeline-node" data-stage="embeddings" aria-haspopup="dialog" aria-controls="stage-modal"><i class="fa-solid fa-shapes"></i><span>Embeddings</span></button>
                 <div class="pipeline-arrow"></div>
-                <div class="pipeline-node"><i class="fa-solid fa-database"></i><span>Vector Store</span></div>
+                <button type="button" class="pipeline-node" data-stage="vectorstore" aria-haspopup="dialog" aria-controls="stage-modal"><i class="fa-solid fa-database"></i><span>Vector Store</span></button>
                 <div class="pipeline-arrow"></div>
-                <div class="pipeline-node"><i class="fa-solid fa-magnifying-glass"></i><span>Retrieval</span></div>
+                <button type="button" class="pipeline-node" data-stage="retrieval" aria-haspopup="dialog" aria-controls="stage-modal"><i class="fa-solid fa-magnifying-glass"></i><span>Retrieval</span></button>
                 <div class="pipeline-arrow"></div>
-                <div class="pipeline-node"><i class="fa-solid fa-brain"></i><span>LLM Generation</span></div>
+                <button type="button" class="pipeline-node" data-stage="llm" aria-haspopup="dialog" aria-controls="stage-modal"><i class="fa-solid fa-brain"></i><span>LLM Generation</span></button>
                 <div class="pipeline-arrow"></div>
-                <div class="pipeline-node pipeline-node--accent"><i class="fa-solid fa-circle-check"></i><span>Validated Answer</span></div>
+                <button type="button" class="pipeline-node pipeline-node--accent" data-stage="validated" aria-haspopup="dialog" aria-controls="stage-modal"><i class="fa-solid fa-circle-check"></i><span>Validated Answer</span></button>
             </div>
             <div class="design-notes" data-reveal>
                 <div class="design-note">
@@ -569,7 +569,7 @@
                     </a>
                     <div class="contact-item contact-item--static">
                         <i class="fas fa-map-marker-alt"></i>
-                        <div><h3>Location</h3><p>San Jose, CA, USA</p></div>
+                        <div><h3>Location</h3><p>USA</p></div>
                     </div>
                     <div class="contact-item contact-item--static">
                         <i class="fas fa-comment-dots"></i>
@@ -601,6 +601,28 @@
         <button type="button" id="fab-message" class="fab-btn fab-btn--message magnetic" data-label="Message" aria-label="Message Srinath" aria-haspopup="dialog" aria-controls="chat-modal">
             <i class="fa-solid fa-comment-dots"></i>
         </button>
+    </div>
+
+    <!-- RAG pipeline stage detail popup -->
+    <div class="stage-modal" id="stage-modal" hidden>
+        <div class="stage-modal-backdrop" data-close-stage></div>
+        <div class="stage-panel" role="dialog" aria-modal="true" aria-labelledby="stage-panel-title">
+            <button type="button" class="stage-close" data-close-stage aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+            <div class="stage-breadcrumb" id="stage-breadcrumb"></div>
+            <div class="stage-panel-head">
+                <span class="stage-panel-icon" id="stage-panel-icon"></span>
+                <div>
+                    <span class="stage-panel-kicker">RAG Pipeline Stage</span>
+                    <h3 id="stage-panel-title"></h3>
+                </div>
+            </div>
+            <p class="stage-panel-body" id="stage-panel-body"></p>
+            <div class="stage-panel-proof" id="stage-panel-proof"></div>
+            <div class="stage-panel-nav">
+                <button type="button" class="stage-nav-btn" id="stage-prev" aria-label="Previous stage"><i class="fa-solid fa-arrow-left"></i> Prev</button>
+                <button type="button" class="stage-nav-btn" id="stage-next" aria-label="Next stage">Next <i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+        </div>
     </div>
 
     <!-- One-to-one message chat box -->
@@ -635,7 +657,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-    <script src="three-bg.js?v=20260911c"></script>
-    <script src="script.js?v=20260911c"></script>
+    <script src="three-bg.js?v=20260911d"></script>
+    <script src="script.js?v=20260911d"></script>
 </body>
 </html>

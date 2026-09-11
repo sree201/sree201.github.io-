@@ -369,6 +369,118 @@
     }
 
     /* ---------------------------------------------------------------------
+       RAG pipeline stage detail popup
+       ------------------------------------------------------------------- */
+    const STAGE_ORDER = ['ingestion', 'chunking', 'embeddings', 'vectorstore', 'retrieval', 'llm', 'validated'];
+    const STAGE_CONTENT = {
+        ingestion: {
+            icon: 'fa-solid fa-file-lines',
+            title: 'Ingestion',
+            body: "Every RAG pipeline starts with pulling in the raw source material — policy documents, support tickets, and knowledge-base articles for the Enterprise Document Intelligence Assistant I built. I normalize formats and strip noise here so nothing downstream trips over a malformed PDF or an inconsistent field.",
+            proof: 'Enterprise Document Intelligence Assistant'
+        },
+        chunking: {
+            icon: 'fa-solid fa-scissors',
+            title: 'Chunking',
+            body: "Rather than naive fixed-length splits, I break documents into semantically coherent chunks and tag each with metadata (source, section, date). That chunking + metadata filtering strategy cut irrelevant retrieval results and reduced manual document review time.",
+            proof: '-34% manual document review time'
+        },
+        embeddings: {
+            icon: 'fa-solid fa-shapes',
+            title: 'Embeddings',
+            body: "Each chunk gets converted into a vector embedding — using OpenAI or Azure OpenAI embedding models depending on the deployment — that captures its semantic meaning. That's what lets the system match a question to the right content even when the wording doesn't overlap at all.",
+            proof: 'OpenAI API / Azure OpenAI'
+        },
+        vectorstore: {
+            icon: 'fa-solid fa-database',
+            title: 'Vector Store',
+            body: "Embeddings get indexed in a vector database for fast similarity search at scale. I've built with FAISS, ChromaDB, Pinecone, and Weaviate depending on the project's hosting and latency needs.",
+            proof: 'FAISS · ChromaDB · Pinecone · Weaviate'
+        },
+        retrieval: {
+            icon: 'fa-solid fa-magnifying-glass',
+            title: 'Retrieval',
+            body: "At query time, the user's question gets embedded and matched against the vector store by similarity search, combined with metadata filtering to cut noise. This is the work that improved search accuracy on the internal knowledge assistant I built for support teams.",
+            proof: '+32% search accuracy'
+        },
+        llm: {
+            icon: 'fa-solid fa-brain',
+            title: 'LLM Generation',
+            body: "Retrieved context gets passed to an LLM (OpenAI API / Azure OpenAI via LangChain) to generate a grounded answer instead of a hallucinated one. I spend real time on prompt engineering and failure-case testing here, not just the first draft that comes back.",
+            proof: '-25% inaccurate responses'
+        },
+        validated: {
+            icon: 'fa-solid fa-circle-check',
+            title: 'Validated Answer',
+            body: 'Before anything ships, I validate generated answers against the source documents alongside QA — "it sounds right" isn\'t good enough for production. That validation loop is what reduced unsupported LLM responses before rollout.',
+            proof: '-26% unsupported LLM responses'
+        }
+    };
+
+    const stageModal = document.getElementById('stage-modal');
+    const stageBreadcrumb = document.getElementById('stage-breadcrumb');
+    const stagePanelIcon = document.getElementById('stage-panel-icon');
+    const stagePanelTitle = document.getElementById('stage-panel-title');
+    const stagePanelBody = document.getElementById('stage-panel-body');
+    const stagePanelProof = document.getElementById('stage-panel-proof');
+    const stagePrevBtn = document.getElementById('stage-prev');
+    const stageNextBtn = document.getElementById('stage-next');
+    let currentStageIndex = 0;
+
+    function renderStage(index) {
+        const key = STAGE_ORDER[index];
+        const data = STAGE_CONTENT[key];
+        if (!data) return;
+        currentStageIndex = index;
+
+        stagePanelIcon.innerHTML = `<i class="${data.icon}"></i>`;
+        stagePanelTitle.textContent = data.title;
+        stagePanelBody.textContent = data.body;
+        stagePanelProof.innerHTML = `<i class="fa-solid fa-chart-line"></i> ${data.proof}`;
+
+        stageBreadcrumb.innerHTML = STAGE_ORDER.map((_, i) => {
+            const cls = i === index ? 'is-active' : (i < index ? 'is-done' : '');
+            return `<span class="${cls}"></span>`;
+        }).join('');
+
+        stagePrevBtn.disabled = index === 0;
+        stageNextBtn.disabled = index === STAGE_ORDER.length - 1;
+    }
+
+    function openStage(key) {
+        if (!stageModal) return;
+        const index = Math.max(STAGE_ORDER.indexOf(key), 0);
+        renderStage(index);
+        stageModal.hidden = false;
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeStage() {
+        if (!stageModal) return;
+        stageModal.hidden = true;
+        document.body.style.overflow = '';
+    }
+
+    document.querySelectorAll('.pipeline-node[data-stage]').forEach((btn) => {
+        btn.addEventListener('click', () => openStage(btn.dataset.stage));
+    });
+
+    if (stageModal) {
+        stageModal.querySelectorAll('[data-close-stage]').forEach((el) => {
+            el.addEventListener('click', closeStage);
+        });
+        stagePrevBtn.addEventListener('click', () => {
+            if (currentStageIndex > 0) renderStage(currentStageIndex - 1);
+        });
+        stageNextBtn.addEventListener('click', () => {
+            if (currentStageIndex < STAGE_ORDER.length - 1) renderStage(currentStageIndex + 1);
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !stageModal.hidden) closeStage();
+        });
+    }
+
+    /* ---------------------------------------------------------------------
        One-to-one message chat box
        ------------------------------------------------------------------- */
     const CONTACT_PHONE = '12092458426'; // digits only, for the WhatsApp deep link

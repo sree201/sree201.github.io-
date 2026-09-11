@@ -829,6 +829,16 @@ section { position: relative; padding: 76px 0; z-index: 1; scroll-margin-top: 90
     backdrop-filter: blur(10px);
 }
 
+.pipeline-hint {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 1.1rem;
+}
+.pipeline-hint i { color: var(--cyan); }
+
 .pipeline-node {
     display: flex;
     flex-direction: column;
@@ -837,6 +847,26 @@ section { position: relative; padding: 76px 0; z-index: 1; scroll-margin-top: 90
     padding: 1rem 0.8rem;
     min-width: 108px;
     text-align: center;
+    background: none;
+    border: none;
+    font-family: inherit;
+    cursor: pointer;
+    border-radius: var(--radius-md);
+    transition: transform 0.25s var(--ease), background 0.25s var(--ease);
+}
+
+.pipeline-node:hover,
+.pipeline-node:focus-visible {
+    transform: translateY(-4px);
+    background: rgba(255, 255, 255, 0.04);
+    outline: none;
+}
+
+.pipeline-node:hover i,
+.pipeline-node:focus-visible i {
+    border-color: var(--card-border-hover);
+    color: var(--text-primary);
+    box-shadow: 0 0 18px rgba(0, 229, 255, 0.25);
 }
 
 .pipeline-node i {
@@ -850,6 +880,7 @@ section { position: relative; padding: 76px 0; z-index: 1; scroll-margin-top: 90
     border: 1px solid var(--card-border);
     color: var(--cyan);
     font-size: 1.05rem;
+    transition: border-color 0.25s, color 0.25s, box-shadow 0.25s;
 }
 
 .pipeline-node--accent i {
@@ -866,8 +897,10 @@ section { position: relative; padding: 76px 0; z-index: 1; scroll-margin-top: 90
     min-width: 22px;
     height: 2px;
     background: linear-gradient(90deg, var(--cyan), var(--violet));
+    background-size: 200% 100%;
     opacity: 0.5;
     position: relative;
+    animation: pipelineFlow 3s linear infinite;
 }
 .pipeline-arrow::after {
     content: '';
@@ -880,6 +913,15 @@ section { position: relative; padding: 76px 0; z-index: 1; scroll-margin-top: 90
     background: var(--violet);
     transform: translateY(-50%);
     box-shadow: 0 0 8px var(--violet);
+}
+
+@keyframes pipelineFlow {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pipeline-arrow { animation: none; }
 }
 
 .design-notes {
@@ -1338,6 +1380,159 @@ section { position: relative; padding: 76px 0; z-index: 1; scroll-margin-top: 90
     .fab-contact { right: 14px; bottom: 18px; gap: 0.7rem; }
     .fab-btn { width: 48px; height: 48px; font-size: 1.05rem; }
     .fab-btn::after { display: none; }
+}
+
+/* ==========================================================================
+   RAG pipeline stage detail modal
+   ========================================================================== */
+
+.stage-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 2050;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+.stage-modal[hidden] { display: none; }
+
+.stage-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(4, 6, 12, 0.72);
+    backdrop-filter: blur(6px);
+}
+
+.stage-panel {
+    position: relative;
+    width: 100%;
+    max-width: 460px;
+    max-height: 85vh;
+    overflow-y: auto;
+    background: rgba(14, 18, 32, 0.98);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 30px 90px rgba(0, 0, 0, 0.6);
+    padding: 1.8rem;
+    animation: chatIn 0.3s var(--ease);
+}
+
+.stage-close {
+    position: absolute;
+    top: 1.2rem;
+    right: 1.2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--card-border);
+    color: var(--text-secondary);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+}
+.stage-close:hover { color: var(--text-primary); border-color: var(--card-border-hover); }
+
+.stage-breadcrumb {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 1.4rem;
+}
+
+.stage-breadcrumb span {
+    flex: 1;
+    height: 3px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.1);
+    transition: background 0.3s;
+}
+.stage-breadcrumb span.is-active { background: var(--gradient-1); }
+.stage-breadcrumb span.is-done { background: rgba(0, 229, 255, 0.35); }
+
+.stage-panel-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.stage-panel-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--gradient-1);
+    color: #04060c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+    box-shadow: 0 0 24px rgba(0, 229, 255, 0.35);
+}
+
+.stage-panel-kicker {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--violet);
+    margin-bottom: 0.2rem;
+}
+
+.stage-panel-head h3 {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+}
+
+.stage-panel-body {
+    color: var(--text-secondary);
+    font-size: 0.94rem;
+    line-height: 1.65;
+    margin-bottom: 1.1rem;
+}
+
+.stage-panel-proof {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.78rem;
+    color: var(--cyan);
+    background: rgba(0, 229, 255, 0.08);
+    border: 1px solid rgba(0, 229, 255, 0.22);
+    padding: 7px 13px;
+    border-radius: 999px;
+    margin-bottom: 1.5rem;
+}
+
+.stage-panel-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    border-top: 1px solid var(--card-border);
+    padding-top: 1.1rem;
+}
+
+.stage-nav-btn {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--card-border);
+    color: var(--text-secondary);
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 0.84rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: color 0.2s, border-color 0.2s;
+}
+.stage-nav-btn:hover { color: var(--text-primary); border-color: var(--card-border-hover); }
+.stage-nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+@media (max-width: 480px) {
+    .stage-modal { padding: 12px; }
+    .stage-panel { padding: 1.4rem; }
 }
 
 /* ==========================================================================
