@@ -68,6 +68,15 @@ Then open `http://localhost:8000`.
   that reference it (nav, hero, contact).
 - **3D background density**: `NODE_COUNT` / `MAX_EDGES` in `three-bg.js` (auto-reduced on small screens).
 
+### Cache-busting (important!)
+
+`styles.css`, `script.js`, `three-bg.js`, and `profile-photo.jpg` are loaded with a `?v=YYYYMMDDx`
+query string in `index.html`. GitHub Pages' CDN caches these files for ~10 minutes by filename, so
+if you edit any of them **without** bumping that version string, visitors (and your own browser)
+can keep seeing the old copy for a while after you push. Whenever you change one of those four
+files, bump its `?v=` value in `index.html` (e.g. `20260911c` -> `20260911d`) so the new content is
+served as a fresh URL immediately instead of waiting out the cache.
+
 ## Deployment
 
 Deployed via GitHub Pages with a custom domain (`srinathkoyi.cloud`, see `CNAME`). See `docs/DEPLOY.md`
