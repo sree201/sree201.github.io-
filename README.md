@@ -21,14 +21,31 @@ straight to GitHub Pages.
 
 ## Sections
 
-Hero · About · Skills (incl. Cloud & MLOps) · System Design (RAG architecture) · Experience timeline ·
-Projects · Leadership & Ownership · Certifications & Education · Contact.
+Hero · About · Skills (incl. Cloud & MLOps) · System Design (RAG architecture) · **Infrastructure**
+(gated 3D system-architecture diagram + global footprint map) · Experience timeline · Projects ·
+Leadership & Ownership · Certifications & Education · Contact.
+
+### The gated Infrastructure section
+
+The full system-architecture diagram (a 3D layered Three.js stack: Client → API → AI/ML → Data →
+Cloud/MLOps) and the global-footprint map are behind a **soft access gate**, not real
+authentication — GitHub Pages has no backend, so there's nothing to check a password against
+server-side. It exists to create an "ask first" moment for recruiters, not to cryptographically
+protect anything; anyone who opens browser dev tools can bypass it.
+
+- Visitors click **Request Access**, which opens the message chat box pre-filled with a
+  recruiter-intro message (sent to you via WhatsApp or email, whichever they pick).
+- Or they enter an **access code** you've shared with them personally, which unlocks it in their
+  browser (persisted via `localStorage`, so it stays unlocked on return visits from that device).
+- The code lives in `script.js` as `ARCH_ACCESS_CODE` (currently `RECRUITER2026`) — change it
+  anytime; it's a plain string, no build step needed.
 
 ## Tech Stack
 
 - HTML5, CSS3 (custom properties, Grid/Flexbox)
 - Vanilla JavaScript (no framework, no build tooling)
-- [Three.js](https://threejs.org/) — hero neural-network background (`three-bg.js`)
+- [Three.js](https://threejs.org/) — hero neural-network background (`three-bg.js`) and the gated
+  3D layered architecture diagram (`architecture-3d.js`)
 - [GSAP](https://gsap.com/) + ScrollTrigger — scroll-linked animation (optional enhancement, guarded)
 - Font Awesome (icons), Google Fonts — Space Grotesk / Inter / JetBrains Mono
 
@@ -40,6 +57,7 @@ portfolio-website/
 ├── styles.css                      # Design system, layout, animations, responsive rules
 ├── script.js                       # Interactions: cursor, reveals, counters, nav, tilt, magnetic btns
 ├── three-bg.js                     # Three.js neural-network hero background
+├── architecture-3d.js               # Three.js 3D layered architecture diagram (gated section)
 ├── profile-photo.jpg               # Profile photo
 ├── Srinath-Koyi-AI-ML-Resume.pdf   # Downloadable résumé (linked from nav/hero/contact)
 ├── CNAME                           # Custom domain (srinathkoyi.cloud)
@@ -70,7 +88,8 @@ Then open `http://localhost:8000`.
 
 ### Cache-busting (important!)
 
-`styles.css`, `script.js`, `three-bg.js`, and `profile-photo.jpg` are loaded with a `?v=YYYYMMDDx`
+`styles.css`, `script.js`, `three-bg.js`, `architecture-3d.js`, and `profile-photo.jpg` are loaded
+with a `?v=YYYYMMDDx`
 query string in `index.html`. GitHub Pages' CDN caches these files for ~10 minutes by filename, so
 if you edit any of them **without** bumping that version string, visitors (and your own browser)
 can keep seeing the old copy for a while after you push. Whenever you change one of those four

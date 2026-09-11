@@ -21,7 +21,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=20260911e">
+    <link rel="stylesheet" href="styles.css?v=20260911h">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <noscript><style>
         [data-reveal] { opacity: 1 !important; transform: none !important; }
@@ -126,7 +126,7 @@
                     <span class="orbit-chip orbit-chip--6"><i class="fa-solid fa-robot"></i></span>
                 </div>
                 <div class="profile-image">
-                    <img src="profile-photo.jpg?v=20260911e" alt="Srinath - AI/ML Engineer" id="profile-img">
+                    <img src="profile-photo.jpg?v=20260911h" alt="Srinath - AI/ML Engineer" id="profile-img">
                     <div class="profile-placeholder" id="profile-placeholder">
                         <i class="fas fa-user"></i>
                     </div>
@@ -365,10 +365,119 @@
         </div>
     </section>
 
+    <!-- Infrastructure & System Architecture (gated) -->
+    <section id="architecture" class="architecture">
+        <div class="container">
+            <p class="section-eyebrow" data-reveal>04 &mdash; Infrastructure</p>
+            <h2 class="section-title" data-reveal>The full <span class="gradient-text">system architecture</span></h2>
+            <p class="section-lede" data-reveal>Beyond the RAG pipeline above &mdash; how the client, serving layer, AI/ML orchestration, data layer, and cloud/MLOps infrastructure fit together end-to-end.</p>
+
+            <div class="arch-gate" id="arch-gate" data-reveal>
+                <div class="arch-gate-icon"><i class="fa-solid fa-lock"></i></div>
+                <h3>Full architecture diagram &mdash; available on request</h3>
+                <p>I keep the detailed infrastructure diagram gated to real conversations. If you're a recruiter or hiring manager, send a quick message and I'll personally unlock it for you.</p>
+                <div class="arch-gate-actions">
+                    <button type="button" class="btn btn-primary magnetic" id="arch-request-btn">
+                        <span>Request Access</span> <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                    <button type="button" class="arch-code-toggle" id="arch-code-toggle">Already have an access code?</button>
+                </div>
+                <form class="arch-code-form" id="arch-code-form" hidden>
+                    <input type="text" id="arch-code-input" placeholder="Enter access code" autocomplete="off">
+                    <button type="submit" class="btn btn-ghost">Unlock</button>
+                </form>
+                <p class="arch-code-error" id="arch-code-error" hidden>That code doesn't match &mdash; try again, or request access above.</p>
+            </div>
+
+            <div class="arch-unlocked" id="arch-unlocked" hidden>
+                <div class="arch-visual">
+                    <canvas id="arch-canvas" class="arch-canvas"></canvas>
+                </div>
+                <div class="arch-legend" id="arch-legend">
+                    <div class="arch-legend-item" data-layer="client">
+                        <span class="arch-legend-dot"></span>
+                        <div>
+                            <h4>Client / Interface Layer</h4>
+                            <p>Streamlit &amp; Gradio prototypes, REST clients consuming model output directly.</p>
+                        </div>
+                    </div>
+                    <div class="arch-legend-item" data-layer="api">
+                        <span class="arch-legend-dot"></span>
+                        <div>
+                            <h4>API / Serving Layer</h4>
+                            <p>FastAPI inference endpoints &mdash; real-time and batch prediction, REST APIs for internal app integration.</p>
+                        </div>
+                    </div>
+                    <div class="arch-legend-item" data-layer="ai">
+                        <span class="arch-legend-dot"></span>
+                        <div>
+                            <h4>AI/ML Orchestration</h4>
+                            <p>LangChain/LlamaIndex RAG pipelines, Hugging Face Transformer classifiers, XGBoost/LightGBM models, OpenAI &amp; Azure OpenAI for generation.</p>
+                        </div>
+                    </div>
+                    <div class="arch-legend-item" data-layer="data">
+                        <span class="arch-legend-dot"></span>
+                        <div>
+                            <h4>Data &amp; Retrieval</h4>
+                            <p>FAISS, ChromaDB, Pinecone &amp; Weaviate vector stores, embeddings, PostgreSQL for structured data.</p>
+                        </div>
+                    </div>
+                    <div class="arch-legend-item" data-layer="infra">
+                        <span class="arch-legend-dot"></span>
+                        <div>
+                            <h4>Cloud &amp; MLOps</h4>
+                            <p>Azure ML, AWS (EC2/S3/Lambda/SageMaker), Docker, Kubernetes, CI/CD, MLflow, Weights &amp; Biases, model monitoring &amp; drift detection.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="globe-panel">
+                    <div class="globe-panel-head">
+                        <h3>Global footprint</h3>
+                        <p>Where I've worked, and the cloud regions I deploy to. Click a pin.</p>
+                    </div>
+                    <div class="globe-wrap">
+                        <svg viewBox="0 0 400 400" class="globe-svg" role="img" aria-label="Global footprint map with four clickable location pins">
+                            <circle cx="200" cy="200" r="150" class="globe-ring"></circle>
+                            <ellipse cx="200" cy="200" rx="150" ry="60" class="globe-ring"></ellipse>
+                            <ellipse cx="200" cy="200" rx="150" ry="110" class="globe-ring"></ellipse>
+                            <ellipse cx="200" cy="200" rx="60" ry="150" class="globe-ring"></ellipse>
+                            <ellipse cx="200" cy="200" rx="110" ry="150" class="globe-ring"></ellipse>
+                            <line x1="50" y1="200" x2="350" y2="200" class="globe-ring"></line>
+
+                            <path d="M200,200 Q260,150 300,110" class="globe-arc"></path>
+                            <path d="M200,200 Q150,140 110,100" class="globe-arc"></path>
+                            <path d="M200,200 Q140,220 90,240" class="globe-arc"></path>
+                            <path d="M200,200 Q220,260 210,300" class="globe-arc"></path>
+
+                            <circle cx="200" cy="200" r="6" class="globe-hub"></circle>
+
+                            <g class="globe-pin" data-pin="india" tabindex="0" role="button" aria-label="India — SureshBy Technologies">
+                                <circle cx="300" cy="110" r="9"></circle>
+                            </g>
+                            <g class="globe-pin" data-pin="azure" tabindex="0" role="button" aria-label="Azure cloud region">
+                                <circle cx="110" cy="100" r="9"></circle>
+                            </g>
+                            <g class="globe-pin" data-pin="aws" tabindex="0" role="button" aria-label="AWS cloud region">
+                                <circle cx="90" cy="240" r="9"></circle>
+                            </g>
+                            <g class="globe-pin" data-pin="gcp" tabindex="0" role="button" aria-label="Google Cloud region">
+                                <circle cx="210" cy="300" r="9"></circle>
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="globe-info" id="globe-info">
+                        <p class="globe-info-placeholder"><i class="fa-solid fa-hand-pointer"></i> Click a pin on the globe to see details</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Experience -->
     <section id="experience" class="experience">
         <div class="container">
-            <p class="section-eyebrow" data-reveal>04 &mdash; Experience</p>
+            <p class="section-eyebrow" data-reveal>05 &mdash; Experience</p>
             <h2 class="section-title" data-reveal>Where I've <span class="gradient-text">shipped it</span></h2>
 
             <div class="timeline">
@@ -440,7 +549,7 @@
     <!-- Projects -->
     <section id="projects" class="projects">
         <div class="container">
-            <p class="section-eyebrow" data-reveal>05 &mdash; Projects</p>
+            <p class="section-eyebrow" data-reveal>06 &mdash; Projects</p>
             <h2 class="section-title" data-reveal>Selected <span class="gradient-text">builds</span></h2>
 
             <div class="projects-grid">
@@ -498,7 +607,7 @@
     <!-- Leadership -->
     <section id="leadership" class="leadership">
         <div class="container">
-            <p class="section-eyebrow" data-reveal>06 &mdash; Leadership &amp; Ownership</p>
+            <p class="section-eyebrow" data-reveal>07 &mdash; Leadership &amp; Ownership</p>
             <h2 class="section-title" data-reveal>More than <span class="gradient-text">the model</span></h2>
             <p class="section-lede" data-reveal>Shipping AI features end-to-end means owning the problem, not just the notebook.</p>
             <div class="leadership-grid" data-reveal>
@@ -530,7 +639,7 @@
     <section id="credentials" class="credentials">
         <div class="container credentials-grid">
             <div data-reveal>
-                <p class="section-eyebrow">07 &mdash; Certifications</p>
+                <p class="section-eyebrow">08 &mdash; Certifications</p>
                 <h2 class="section-title">Continuous <span class="gradient-text">upskilling</span></h2>
                 <div class="cert-list">
                     <div class="cert-item"><i class="fa-solid fa-certificate"></i><div><h4>Machine Learning Specialization</h4><span>Coursera</span></div></div>
@@ -540,7 +649,7 @@
                 </div>
             </div>
             <div data-reveal>
-                <p class="section-eyebrow">08 &mdash; Education</p>
+                <p class="section-eyebrow">09 &mdash; Education</p>
                 <h2 class="section-title">Engineering <span class="gradient-text">foundation</span></h2>
                 <div class="edu-card">
                     <i class="fa-solid fa-graduation-cap"></i>
@@ -556,7 +665,7 @@
     <!-- Contact -->
     <section id="contact" class="contact">
         <div class="container">
-            <p class="section-eyebrow" data-reveal>09 &mdash; Contact</p>
+            <p class="section-eyebrow" data-reveal>10 &mdash; Contact</p>
             <h2 class="section-title" data-reveal>Let's build something <span class="gradient-text">intelligent</span></h2>
             <p class="contact-description" data-reveal>
                 Open to AI/ML Engineer roles and interesting problems in Generative AI, RAG, and applied ML. I'm quick to reply.
@@ -652,7 +761,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-    <script src="three-bg.js?v=20260911e"></script>
-    <script src="script.js?v=20260911e"></script>
+    <script src="three-bg.js?v=20260911h"></script>
+    <script src="architecture-3d.js?v=20260911h"></script>
+    <script src="script.js?v=20260911h"></script>
 </body>
 </html>

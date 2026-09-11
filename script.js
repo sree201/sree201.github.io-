@@ -455,6 +455,134 @@
     }
 
     /* ---------------------------------------------------------------------
+       Gated architecture / infrastructure section
+       -------------------------------------------------------------------
+       This is a SOFT gate, not real authentication -- there's no backend
+       on GitHub Pages to check a password server-side. Anyone determined
+       could bypass it via browser dev tools. The point isn't cryptographic
+       security; it's a polite "ask first" ritual for recruiters, plus a
+       code you can hand out personally after a real conversation. Change
+       the code below to whatever you like, whenever you like.
+       ------------------------------------------------------------------- */
+    const ARCH_ACCESS_CODE = 'RECRUITER2026';
+
+    const archGate = document.getElementById('arch-gate');
+    const archUnlocked = document.getElementById('arch-unlocked');
+    const archRequestBtn = document.getElementById('arch-request-btn');
+    const archCodeToggle = document.getElementById('arch-code-toggle');
+    const archCodeForm = document.getElementById('arch-code-form');
+    const archCodeInput = document.getElementById('arch-code-input');
+    const archCodeError = document.getElementById('arch-code-error');
+
+    const ARCH_LAYERS = ['client', 'api', 'ai', 'data', 'infra'];
+    let archLegendTimer = null;
+
+    function startLegendCycle() {
+        if (archLegendTimer) return;
+        const items = document.querySelectorAll('.arch-legend-item');
+        let i = 0;
+        function tick() {
+            items.forEach((el) => el.classList.remove('is-active'));
+            const current = document.querySelector(`.arch-legend-item[data-layer="${ARCH_LAYERS[i]}"]`);
+            if (current) current.classList.add('is-active');
+            if (window.setArchActiveLayer) window.setArchActiveLayer(ARCH_LAYERS[i]);
+            i = (i + 1) % ARCH_LAYERS.length;
+        }
+        tick();
+        if (!prefersReducedMotion) archLegendTimer = setInterval(tick, 2600);
+    }
+
+    function unlockArchitecture() {
+        if (!archGate || !archUnlocked) return;
+        archGate.hidden = true;
+        archUnlocked.hidden = false;
+        try { localStorage.setItem('arch_unlocked', '1'); } catch (e) { /* private mode etc. */ }
+        if (window.initArchScene) window.initArchScene();
+        startLegendCycle();
+    }
+
+    try {
+        if (localStorage.getItem('arch_unlocked') === '1') unlockArchitecture();
+    } catch (e) { /* private mode etc. */ }
+
+    if (archRequestBtn) {
+        archRequestBtn.addEventListener('click', () => {
+            if (window.openChatWithMessage) {
+                window.openChatWithMessage("Hi Srinath, I'm a recruiter and I'd like access to view your system architecture diagram.");
+            }
+        });
+    }
+
+    if (archCodeToggle && archCodeForm) {
+        archCodeToggle.addEventListener('click', () => {
+            archCodeForm.hidden = !archCodeForm.hidden;
+            if (!archCodeForm.hidden && archCodeInput) archCodeInput.focus();
+        });
+    }
+
+    if (archCodeForm) {
+        archCodeForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const entered = (archCodeInput.value || '').trim().toUpperCase();
+            if (entered === ARCH_ACCESS_CODE) {
+                if (archCodeError) archCodeError.hidden = true;
+                unlockArchitecture();
+            } else if (archCodeError) {
+                archCodeError.hidden = false;
+            }
+        });
+    }
+
+    /* ---------------------------------------------------------------------
+       Global footprint globe -- clickable pins
+       ------------------------------------------------------------------- */
+    const GLOBE_CONTENT = {
+        india: {
+            title: 'India — SureshBy Technologies',
+            body: 'Where it started (2021–2023): supervised ML models, reusable pipelines, and NLP workflows for recurring operational patterns.'
+        },
+        azure: {
+            title: 'Azure — GenAI & LLM workloads',
+            body: 'Azure OpenAI Service and Azure ML power the RAG summarization and knowledge-assistant workflows built at Lumen Technologies and Infinite Computer Solutions.'
+        },
+        aws: {
+            title: 'AWS — Inference & storage',
+            body: 'EC2, S3, Lambda, and SageMaker for containerized FastAPI inference services and batch prediction jobs.'
+        },
+        gcp: {
+            title: 'Google Cloud — Vertex AI',
+            body: 'Secondary ML tooling and experimentation on Vertex AI, rounding out cross-cloud familiarity.'
+        }
+    };
+
+    document.querySelectorAll('.globe-pin').forEach((pin) => {
+        function activate() {
+            document.querySelectorAll('.globe-pin').forEach((p) => p.classList.remove('is-selected'));
+            pin.classList.add('is-selected');
+            const data = GLOBE_CONTENT[pin.dataset.pin];
+            const info = document.getElementById('globe-info');
+            if (data && info) {
+                const wrapper = document.createElement('div');
+                const titleEl = document.createElement('h4');
+                titleEl.textContent = data.title;
+                const bodyEl = document.createElement('p');
+                bodyEl.textContent = data.body;
+                wrapper.appendChild(titleEl);
+                wrapper.appendChild(bodyEl);
+                info.innerHTML = '';
+                info.appendChild(wrapper);
+            }
+        }
+        pin.addEventListener('click', activate);
+        pin.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                activate();
+            }
+        });
+    });
+
+    /* ---------------------------------------------------------------------
        One-to-one message chat box
        ------------------------------------------------------------------- */
     const CONTACT_PHONE = '12092458426'; // digits only, for the WhatsApp deep link
@@ -465,12 +593,14 @@
     const chatForm = document.getElementById('chat-form');
     const chatTextarea = document.getElementById('chat-message');
 
-    function openChat() {
+    function openChat(prefill) {
         if (!chatModal) return;
+        if (prefill && chatTextarea) chatTextarea.value = prefill;
         chatModal.hidden = false;
         document.body.style.overflow = 'hidden';
         setTimeout(() => chatTextarea && chatTextarea.focus(), 50);
     }
+    window.openChatWithMessage = openChat; // used by the architecture-access gate
 
     function closeChat() {
         if (!chatModal) return;
@@ -479,7 +609,7 @@
     }
 
     if (fabMessageBtn && chatModal) {
-        fabMessageBtn.addEventListener('click', openChat);
+        fabMessageBtn.addEventListener('click', () => openChat());
         chatModal.querySelectorAll('[data-close-chat]').forEach((el) => {
             el.addEventListener('click', closeChat);
         });
