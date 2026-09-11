@@ -6,332 +6,567 @@
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <!-- Force HTTPS redirect -->
     <script>
-        // Force HTTPS - redirect if accessed via HTTP
         if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
             location.replace('https:' + window.location.href.substring(window.location.protocol.length));
         }
     </script>
-    <title>Srinath Koyi - Portfolio</title>
+    <title>Srinath — AI/ML Engineer</title>
+    <meta name="description" content="Srinath — AI/ML Engineer specializing in Generative AI, RAG pipelines, NLP, and production ML systems. 4+ years building document retrieval, classification, and decision-support AI for enterprise teams.">
+    <meta property="og:title" content="Srinath — AI/ML Engineer">
+    <meta property="og:description" content="Generative AI · RAG Pipelines · NLP · Predictive ML · Cloud &amp; MLOps">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#070a14">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%2300e5ff'/%3E%3Cstop offset='1' stop-color='%23a855f7'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='%23070a14'/%3E%3Ctext x='32' y='42' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='26' fill='url(%23g)' text-anchor='middle'%3ESK%3C/text%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <noscript><style>
+        [data-reveal] { opacity: 1 !important; transform: none !important; }
+        .preloader { display: none !important; }
+        .cursor-dot, .cursor-ring, .scroll-progress { display: none !important; }
+    </style></noscript>
 </head>
 <body>
+
+    <!-- Preloader -->
+    <div class="preloader" id="preloader" aria-hidden="true">
+        <div class="preloader-inner">
+            <span class="preloader-mark">SK</span>
+            <div class="preloader-bar"><span id="preloader-progress"></span></div>
+            <span class="preloader-text">initializing_portfolio<span class="blink">_</span></span>
+        </div>
+    </div>
+
+    <!-- Custom cursor (desktop only, controlled via JS) -->
+    <div class="cursor-dot" id="cursor-dot"></div>
+    <div class="cursor-ring" id="cursor-ring"></div>
+
+    <!-- Scroll progress -->
+    <div class="scroll-progress" id="scroll-progress"></div>
+
+    <!-- Ambient backdrop -->
+    <div class="bg-grid" aria-hidden="true"></div>
+    <div class="bg-glow bg-glow--one" aria-hidden="true"></div>
+    <div class="bg-glow bg-glow--two" aria-hidden="true"></div>
+
     <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="nav-brand">Portfolio</div>
-            <ul class="nav-menu">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#skills">Skills</a></li>
-                <li><a href="#projects">Projects</a></li>
-                <li><a href="#contact">Contact</a></li>
+    <nav class="navbar" id="navbar">
+        <div class="container navbar-inner">
+            <a href="#home" class="nav-brand">
+                <span class="nav-brand-mark">SK</span>
+                <span class="nav-brand-text">Srinath<em>.ai</em></span>
+            </a>
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="#home" class="nav-link active" data-nav="home">Home</a></li>
+                <li><a href="#about" class="nav-link" data-nav="about">About</a></li>
+                <li><a href="#skills" class="nav-link" data-nav="skills">Skills</a></li>
+                <li><a href="#experience" class="nav-link" data-nav="experience">Experience</a></li>
+                <li><a href="#projects" class="nav-link" data-nav="projects">Projects</a></li>
+                <li><a href="#contact" class="nav-link" data-nav="contact">Contact</a></li>
             </ul>
-            <div class="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
+            <a href="Srinath-Koyi-AI-ML-Resume.pdf" class="btn btn-ghost nav-resume" download>
+                <i class="fa-solid fa-arrow-down-to-line"></i> Resume
+            </a>
+            <div class="hamburger" id="hamburger" aria-label="Toggle menu" role="button" tabindex="0">
+                <span></span><span></span><span></span>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- Hero -->
     <section id="home" class="hero">
-        <div class="container">
+        <canvas id="neural-canvas" class="neural-canvas"></canvas>
+        <div class="container hero-inner">
             <div class="hero-content">
-                <h1 class="hero-title">
-                    Hi, I'm <span class="highlight">Srinath Koyi</span>
+                <p class="eyebrow" data-reveal><span class="eyebrow-dot"></span> Available for new opportunities &middot; San Jose, CA</p>
+                <h1 class="hero-title" data-reveal>
+                    Hi, I'm <span class="gradient-text">Srinath</span>
                 </h1>
-                <p class="hero-subtitle">Sr. Network Security Cloud Engineer</p>
-                <p class="hero-description">
-                    Experienced Network Engineer with 11+ years of expertise in network automation, cloud infrastructure, and security solutions
+                <h2 class="hero-role" data-reveal>
+                    <span class="typed-role" id="typed-role">AI/ML Engineer</span><span class="cursor-blink">|</span>
+                </h2>
+                <p class="hero-description" data-reveal>
+                    I design and ship Generative AI &amp; machine learning systems — <strong>RAG pipelines,
+                    LLM-powered assistants, and predictive models</strong> — that turn messy enterprise data into
+                    fast, trustworthy answers. 4+ years shipping production AI that measurably cuts manual work.
                 </p>
-                <div class="hero-buttons">
-                    <a href="#projects" class="btn btn-primary">View My Work</a>
-                    <a href="#contact" class="btn btn-secondary">Get In Touch</a>
+                <div class="hero-buttons" data-reveal>
+                    <a href="#projects" class="btn btn-primary magnetic"><span>View My Work</span> <i class="fa-solid fa-arrow-right"></i></a>
+                    <a href="#contact" class="btn btn-secondary magnetic"><span>Get In Touch</span></a>
+                    <a href="Srinath-Koyi-AI-ML-Resume.pdf" class="btn btn-ghost magnetic" download><span>Download Résumé</span> <i class="fa-solid fa-arrow-down-to-line"></i></a>
+                </div>
+                <div class="hero-stats" data-reveal>
+                    <div class="hero-stat">
+                        <span class="hero-stat-num" data-counter data-target="4" data-suffix="+">0</span>
+                        <span class="hero-stat-label">Years in AI/ML</span>
+                    </div>
+                    <div class="hero-stat">
+                        <span class="hero-stat-num" data-counter data-target="35" data-suffix="%">0</span>
+                        <span class="hero-stat-label">Manual Review Cut</span>
+                    </div>
+                    <div class="hero-stat">
+                        <span class="hero-stat-num" data-counter data-target="32" data-suffix="%">0</span>
+                        <span class="hero-stat-label">Search Accuracy Gain</span>
+                    </div>
+                    <div class="hero-stat">
+                        <span class="hero-stat-num" data-counter data-target="6" data-suffix="">0</span>
+                        <span class="hero-stat-label">AI/ML Certifications</span>
+                    </div>
                 </div>
             </div>
-            <div class="hero-image">
+            <div class="hero-visual">
+                <div class="hero-orbit" aria-hidden="true">
+                    <span class="orbit-chip orbit-chip--1"><i class="fa-solid fa-brain"></i></span>
+                    <span class="orbit-chip orbit-chip--2"><i class="fa-brands fa-python"></i></span>
+                    <span class="orbit-chip orbit-chip--3"><i class="fa-solid fa-cloud"></i></span>
+                    <span class="orbit-chip orbit-chip--4"><i class="fa-solid fa-diagram-project"></i></span>
+                    <span class="orbit-chip orbit-chip--5"><i class="fa-solid fa-database"></i></span>
+                    <span class="orbit-chip orbit-chip--6"><i class="fa-solid fa-robot"></i></span>
+                </div>
                 <div class="profile-image">
-                    <img src="profile-photo.jpg" alt="Srinath Koyi - Sr. Network Security Cloud Engineer" id="profile-img">
+                    <img src="profile-photo.jpg" alt="Srinath - AI/ML Engineer" id="profile-img">
                     <div class="profile-placeholder" id="profile-placeholder">
                         <i class="fas fa-user"></i>
                     </div>
                 </div>
+                <div class="scan-ring" aria-hidden="true"></div>
             </div>
         </div>
+        <a href="#about" class="scroll-cue" aria-label="Scroll to About">
+            <span>Scroll</span>
+            <i class="fa-solid fa-chevron-down"></i>
+        </a>
     </section>
 
-    <!-- About Section -->
+    <!-- About -->
     <section id="about" class="about">
         <div class="container">
-            <h2 class="section-title">About Me</h2>
-            <div class="about-content">
-                <div class="about-text">
+            <p class="section-eyebrow" data-reveal>01 &mdash; About</p>
+            <h2 class="section-title" data-reveal>Turning data into <span class="gradient-text">decisions</span></h2>
+            <div class="about-grid">
+                <div class="about-text" data-reveal>
                     <p>
-                        Experienced Sr. Network Engineer with 11+ years of expertise in network engineering, automation, and security. 
-                        Strong proficiency in Palo Alto firewall, Bash Scripting, Python, Ansible, Docker, RedHat, and Infrastructure as Code (IAC). 
-                        Adept at implementing network automation solutions, API integrations, and cloud networking to optimize enterprise infrastructure.
+                        I'm an AI/ML Engineer with 4+ years of experience building machine learning, NLP, and
+                        Generative AI solutions that improve document retrieval, issue classification, knowledge
+                        discovery, and decision support for enterprise teams.
                     </p>
                     <p>
-                        Hands-on experience with DevOps tools, performance monitoring, and network security automation. 
-                        Deep expertise in Palo Alto firewalls, VLANs, ACLs, IDS/IPS, and HIPAA-compliant policies. 
-                        Proven track record in network automation, cloud deployments, and infrastructure optimization.
+                        My day-to-day spans the full lifecycle — from data cleaning and feature engineering, through
+                        model training and evaluation, to shipping <strong>FastAPI inference services</strong> and
+                        <strong>RAG pipelines</strong> that real teams depend on. I work closely with product, QA,
+                        and data teams to translate ambiguous operational problems into validated, production-ready
+                        AI features, and I care as much about measurable business impact as about model accuracy.
                     </p>
-                    <div class="about-stats">
-                        <div class="stat-item">
-                            <h3>11+</h3>
-                            <p>Years Experience</p>
-                        </div>
-                        <div class="stat-item">
-                            <h3>40%</h3>
-                            <p>Automation Efficiency</p>
-                        </div>
-                        <div class="stat-item">
-                            <h3>30+</h3>
-                            <p>Technologies</p>
-                        </div>
+                    <p>
+                        Recently I've been deepening my <strong>cloud &amp; MLOps</strong> practice — containerizing
+                        inference services, deploying LLM workflows on Azure OpenAI, and building the monitoring and
+                        evaluation habits (MLflow tracking, drift checks, A/B validation) that keep models reliable
+                        after launch, not just at demo time.
+                    </p>
+                </div>
+                <div class="about-cards" data-reveal>
+                    <div class="capability-card">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <h3>Generative AI &amp; RAG</h3>
+                        <p>LangChain / LlamaIndex pipelines, embeddings, vector search, and prompt engineering that turn documents into answers.</p>
+                    </div>
+                    <div class="capability-card">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <h3>Predictive &amp; NLP Modeling</h3>
+                        <p>Classification, clustering, and recommendation systems tuned with rigorous evaluation — precision, recall, F1, ROC-AUC.</p>
+                    </div>
+                    <div class="capability-card">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <h3>Cloud &amp; MLOps</h3>
+                        <p>Azure OpenAI, containerized FastAPI services, model tracking with MLflow, and CI/CD-driven deployment workflows.</p>
+                    </div>
+                    <div class="capability-card">
+                        <i class="fa-solid fa-people-arrows"></i>
+                        <h3>Cross-Functional Leadership</h3>
+                        <p>Own AI features end-to-end — defining acceptance criteria with product/QA, validating outputs, and driving adoption.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Skills Section -->
+    <!-- Skills -->
     <section id="skills" class="skills">
         <div class="container">
-            <h2 class="section-title">Skills & Technologies</h2>
-            <div class="skills-grid">
+            <p class="section-eyebrow" data-reveal>02 &mdash; Skills</p>
+            <h2 class="section-title" data-reveal>The <span class="gradient-text">stack</span> behind the work</h2>
+            <p class="section-lede" data-reveal>Core ML/NLP/GenAI tooling, plus the cloud &amp; MLOps practices I use to get models into production and keep them healthy.</p>
+
+            <div class="skills-grid" data-reveal>
                 <div class="skill-category">
-                    <h3><i class="fas fa-code"></i> Programming Languages</h3>
+                    <h3><i class="fas fa-code"></i> Programming &amp; Data</h3>
                     <div class="skill-tags">
-                        <span class="skill-tag">Python 3</span>
-                        <span class="skill-tag">Bash</span>
-                        <span class="skill-tag">Golang</span>
-                        <span class="skill-tag">Flask</span>
-                        <span class="skill-tag">REST APIs</span>
+                        <span class="skill-tag">Python</span>
+                        <span class="skill-tag">SQL</span>
+                        <span class="skill-tag">Pandas</span>
+                        <span class="skill-tag">NumPy</span>
+                        <span class="skill-tag">Data Cleaning</span>
+                        <span class="skill-tag">Feature Engineering</span>
+                        <span class="skill-tag">EDA</span>
                     </div>
                 </div>
                 <div class="skill-category">
-                    <h3><i class="fas fa-network-wired"></i> Networking</h3>
+                    <h3><i class="fas fa-diagram-project"></i> Machine Learning</h3>
                     <div class="skill-tags">
-                        <span class="skill-tag">Cisco IOS/NX-OS</span>
-                        <span class="skill-tag">Arista EOS</span>
-                        <span class="skill-tag">Palo Alto</span>
-                        <span class="skill-tag">F5 LTM</span>
-                        <span class="skill-tag">AVI Networks</span>
-                        <span class="skill-tag">Juniper</span>
+                        <span class="skill-tag">Scikit-learn</span>
+                        <span class="skill-tag">XGBoost</span>
+                        <span class="skill-tag">LightGBM</span>
+                        <span class="skill-tag">Classification</span>
+                        <span class="skill-tag">Regression</span>
+                        <span class="skill-tag">Clustering</span>
+                        <span class="skill-tag">Recommendation Systems</span>
+                        <span class="skill-tag">Hyperparameter Tuning</span>
                     </div>
                 </div>
                 <div class="skill-category">
-                    <h3><i class="fas fa-cloud"></i> Cloud & DevOps</h3>
+                    <h3><i class="fas fa-layer-group"></i> Deep Learning</h3>
                     <div class="skill-tags">
-                        <span class="skill-tag">AWS (EC2/S3/VPC)</span>
-                        <span class="skill-tag">Kubernetes</span>
+                        <span class="skill-tag">PyTorch</span>
+                        <span class="skill-tag">TensorFlow</span>
+                        <span class="skill-tag">Keras</span>
+                        <span class="skill-tag">CNN</span>
+                        <span class="skill-tag">RNN / LSTM</span>
+                        <span class="skill-tag">Transfer Learning</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3><i class="fas fa-comments"></i> NLP</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Hugging Face Transformers</span>
+                        <span class="skill-tag">BERT</span>
+                        <span class="skill-tag">Tokenization</span>
+                        <span class="skill-tag">NER</span>
+                        <span class="skill-tag">Sentiment Analysis</span>
+                        <span class="skill-tag">Semantic Similarity</span>
+                    </div>
+                </div>
+                <div class="skill-category skill-category--highlight">
+                    <h3><i class="fas fa-wand-magic-sparkles"></i> Generative AI &amp; LLMs</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">OpenAI API</span>
+                        <span class="skill-tag">Azure OpenAI</span>
+                        <span class="skill-tag">LangChain</span>
+                        <span class="skill-tag">LlamaIndex</span>
+                        <span class="skill-tag">RAG</span>
+                        <span class="skill-tag">Prompt Engineering</span>
+                        <span class="skill-tag">Embeddings</span>
+                        <span class="skill-tag">Vector Search</span>
+                        <span class="skill-tag">LLM Evaluation</span>
+                    </div>
+                </div>
+                <div class="skill-category skill-category--highlight">
+                    <h3><i class="fas fa-cloud"></i> Cloud &amp; MLOps</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Azure OpenAI Service</span>
+                        <span class="skill-tag">Azure ML</span>
+                        <span class="skill-tag">AWS (EC2 / S3 / Lambda)</span>
                         <span class="skill-tag">Docker</span>
-                        <span class="skill-tag">Terraform</span>
-                        <span class="skill-tag">Ansible</span>
-                        <span class="skill-tag">OpenShift</span>
+                        <span class="skill-tag">Kubernetes Fundamentals</span>
                         <span class="skill-tag">CI/CD</span>
+                        <span class="skill-tag">MLflow</span>
+                        <span class="skill-tag">Model Monitoring</span>
+                        <span class="skill-tag">Git / GitHub</span>
                     </div>
                 </div>
                 <div class="skill-category">
-                    <h3><i class="fas fa-shield-alt"></i> Security & Monitoring</h3>
+                    <h3><i class="fas fa-check-double"></i> Model Evaluation</h3>
                     <div class="skill-tags">
-                        <span class="skill-tag">Palo Alto Firewall</span>
-                        <span class="skill-tag">CyberArk</span>
-                        <span class="skill-tag">Prometheus</span>
-                        <span class="skill-tag">Grafana</span>
-                        <span class="skill-tag">ELK Stack</span>
-                        <span class="skill-tag">Splunk</span>
-                        <span class="skill-tag">Wireshark</span>
+                        <span class="skill-tag">Cross-Validation</span>
+                        <span class="skill-tag">Precision / Recall</span>
+                        <span class="skill-tag">F1-Score</span>
+                        <span class="skill-tag">ROC-AUC</span>
+                        <span class="skill-tag">Confusion Matrix</span>
+                        <span class="skill-tag">A/B Testing</span>
                     </div>
                 </div>
                 <div class="skill-category">
-                    <h3><i class="fas fa-database"></i> Data & Infrastructure</h3>
+                    <h3><i class="fas fa-server"></i> AI App Development</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">FastAPI</span>
+                        <span class="skill-tag">REST APIs</span>
+                        <span class="skill-tag">Real-Time Inference</span>
+                        <span class="skill-tag">Batch Prediction</span>
+                        <span class="skill-tag">Streamlit</span>
+                        <span class="skill-tag">Gradio</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3><i class="fas fa-database"></i> Databases &amp; Vector Stores</h3>
                     <div class="skill-tags">
                         <span class="skill-tag">PostgreSQL</span>
-                        <span class="skill-tag">Snowflake</span>
-                        <span class="skill-tag">SQL</span>
-                        <span class="skill-tag">VMware vSphere</span>
-                        <span class="skill-tag">OpenStack</span>
-                        <span class="skill-tag">Red Hat</span>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <h3><i class="fas fa-tools"></i> Tools & Methodologies</h3>
-                    <div class="skill-tags">
-                        <span class="skill-tag">GitLab CI/CD</span>
-                        <span class="skill-tag">Jenkins</span>
-                        <span class="skill-tag">Helm</span>
-                        <span class="skill-tag">ServiceNow</span>
-                        <span class="skill-tag">Jira</span>
-                        <span class="skill-tag">Agile Scrum</span>
-                        <span class="skill-tag">ITIL</span>
+                        <span class="skill-tag">FAISS</span>
+                        <span class="skill-tag">Pinecone</span>
+                        <span class="skill-tag">ChromaDB</span>
+                        <span class="skill-tag">Similarity Search</span>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Projects Section -->
+    <!-- System Design strip -->
+    <section id="system-design" class="system-design">
+        <div class="container">
+            <p class="section-eyebrow" data-reveal>03 &mdash; System Design</p>
+            <h2 class="section-title" data-reveal>How I architect a <span class="gradient-text">RAG system</span></h2>
+            <p class="section-lede" data-reveal>A representative pipeline I design and productionize — from raw documents to a validated, cited answer served over a REST API.</p>
+            <div class="pipeline" data-reveal>
+                <div class="pipeline-node"><i class="fa-solid fa-file-lines"></i><span>Ingestion</span></div>
+                <div class="pipeline-arrow"></div>
+                <div class="pipeline-node"><i class="fa-solid fa-scissors"></i><span>Chunking</span></div>
+                <div class="pipeline-arrow"></div>
+                <div class="pipeline-node"><i class="fa-solid fa-shapes"></i><span>Embeddings</span></div>
+                <div class="pipeline-arrow"></div>
+                <div class="pipeline-node"><i class="fa-solid fa-database"></i><span>Vector Store</span></div>
+                <div class="pipeline-arrow"></div>
+                <div class="pipeline-node"><i class="fa-solid fa-magnifying-glass"></i><span>Retrieval</span></div>
+                <div class="pipeline-arrow"></div>
+                <div class="pipeline-node"><i class="fa-solid fa-brain"></i><span>LLM Generation</span></div>
+                <div class="pipeline-arrow"></div>
+                <div class="pipeline-node pipeline-node--accent"><i class="fa-solid fa-circle-check"></i><span>Validated Answer</span></div>
+            </div>
+            <div class="design-notes" data-reveal>
+                <div class="design-note">
+                    <h4><i class="fa-solid fa-server"></i> Serving</h4>
+                    <p>FastAPI inference endpoints behind REST APIs, built for both real-time and batch prediction so internal apps can consume model output directly.</p>
+                </div>
+                <div class="design-note">
+                    <h4><i class="fa-solid fa-filter"></i> Relevance</h4>
+                    <p>Metadata filtering + semantic search to cut irrelevant results, with generated answers validated against source documents before rollout.</p>
+                </div>
+                <div class="design-note">
+                    <h4><i class="fa-solid fa-gauge-high"></i> Reliability</h4>
+                    <p>Cross-validation, precision/recall/F1/ROC-AUC, and A/B testing feedback loops used to validate model changes before release.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience -->
+    <section id="experience" class="experience">
+        <div class="container">
+            <p class="section-eyebrow" data-reveal>04 &mdash; Experience</p>
+            <h2 class="section-title" data-reveal>Where I've <span class="gradient-text">shipped it</span></h2>
+
+            <div class="timeline">
+                <div class="timeline-line" aria-hidden="true"><span class="timeline-line-fill" id="timeline-fill"></span></div>
+
+                <div class="timeline-item" data-reveal>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-card">
+                        <span class="timeline-date">Apr 2025 &ndash; Present</span>
+                        <h3>AI/ML Engineer</h3>
+                        <span class="timeline-company">Infinite Computer Solutions Pvt Ltd &middot; USA</span>
+                        <ul>
+                            <li>Built a <strong>RAG-based internal knowledge assistant</strong> (Python, LangChain, OpenAI API, embeddings, FAISS), improving search accuracy by <strong>32%</strong> for support teams.</li>
+                            <li>Developed a ticket classification model (Scikit-learn, Pandas, NumPy, SQL), improving triage speed by <strong>28%</strong> across recurring requests.</li>
+                            <li>Shipped <strong>FastAPI inference endpoints</strong> for NLP models, cutting manual review effort by <strong>30%</strong> during workflow validation.</li>
+                            <li>Improved LLM response quality via prompt refinement and failure-case testing, reducing inaccurate responses by <strong>25%</strong> in pilot use cases.</li>
+                            <li>Built Hugging Face Transformer classification workflows, improving support-ticket routing accuracy by <strong>27%</strong>.</li>
+                            <li>Partnered with product, QA, and data teams on model inputs &amp; acceptance criteria, cutting AI feature rework by <strong>22%</strong>.</li>
+                        </ul>
+                        <div class="timeline-tech">
+                            <span>LangChain</span><span>OpenAI API</span><span>FAISS</span><span>FastAPI</span><span>Hugging Face</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item" data-reveal>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-card">
+                        <span class="timeline-date">Jun 2024 &ndash; Apr 2025</span>
+                        <h3>AI/ML Engineer</h3>
+                        <span class="timeline-company">Lumen Technologies &middot; USA</span>
+                        <ul>
+                            <li>Built predictive ML models (Scikit-learn, XGBoost, Pandas, SQL) for service-risk patterns, improving early issue detection by <strong>30%</strong>.</li>
+                            <li>Developed <strong>Generative AI summarization workflows</strong> on Azure OpenAI + LangChain + vector search, cutting technical note review time by <strong>35%</strong>.</li>
+                            <li>Engineered structured features from operational datasets, reducing data prep time by <strong>34%</strong> before training.</li>
+                            <li>Created <strong>FastAPI-based inference services</strong> for classification and recommendation outputs, improving AI integration speed by <strong>29%</strong>.</li>
+                            <li>Validated performance with ROC-AUC, precision, recall, F1, and A/B testing, improving release confidence by <strong>27%</strong>.</li>
+                            <li>Built Gradio demo interfaces for stakeholder review, cutting feedback turnaround time by <strong>31%</strong>.</li>
+                        </ul>
+                        <div class="timeline-tech">
+                            <span>Azure OpenAI</span><span>XGBoost</span><span>FastAPI</span><span>Gradio</span><span>Vector Search</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item" data-reveal>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-card">
+                        <span class="timeline-date">May 2021 &ndash; Sep 2023</span>
+                        <h3>Machine Learning Engineer</h3>
+                        <span class="timeline-company">SureshBy Technologies Pvt. Ltd. &middot; India</span>
+                        <ul>
+                            <li>Developed supervised ML models to classify recurring operational patterns, improving analysis speed by <strong>27%</strong>.</li>
+                            <li>Built <strong>reusable ML pipelines</strong> (cleaning &rarr; preprocessing &rarr; feature engineering &rarr; training &rarr; evaluation), cutting repeated dev effort by <strong>30%</strong>.</li>
+                            <li>Created NLP workflows (tokenization, TF-IDF, classification) to analyze support notes, improving issue grouping accuracy by <strong>24%</strong>.</li>
+                            <li>Built recommendation logic using clustering &amp; similarity search, reducing manual article lookup time by <strong>26%</strong>.</li>
+                            <li>Collaborated with engineering &amp; support teams to define target variables, cutting misaligned requirements by <strong>21%</strong>.</li>
+                            <li>Developed Streamlit proof-of-concept apps with REST API integration, reducing manual analysis effort by <strong>28%</strong>.</li>
+                        </ul>
+                        <div class="timeline-tech">
+                            <span>Scikit-learn</span><span>TF-IDF</span><span>Streamlit</span><span>Clustering</span><span>REST APIs</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects -->
     <section id="projects" class="projects">
         <div class="container">
-            <h2 class="section-title">Featured Projects</h2>
+            <p class="section-eyebrow" data-reveal>05 &mdash; Projects</p>
+            <h2 class="section-title" data-reveal>Selected <span class="gradient-text">builds</span></h2>
+
             <div class="projects-grid">
-                <div class="project-card">
-                    <div class="project-image">
-                        <i class="fas fa-network-wired"></i>
-                    </div>
+                <article class="project-card" data-tilt data-reveal>
+                    <div class="project-glow"></div>
+                    <div class="project-image"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
                     <div class="project-content">
-                        <h3>Network Automation Platform</h3>
-                        <p>Developed Python 3 scripts with Flask REST APIs for automated network configuration and monitoring. Automated 40% of network tasks, reducing troubleshooting time significantly.</p>
+                        <h3>Enterprise Document Intelligence Assistant</h3>
+                        <p>AI document search assistant (Python, LlamaIndex, OpenAI API, ChromaDB, embeddings) retrieving policy, ticket, and knowledge-base answers &mdash; <strong>+31% retrieval accuracy</strong>.</p>
+                        <ul class="project-highlights">
+                            <li>Chunking, metadata filtering &amp; semantic search &mdash; <strong>-34%</strong> manual document review time</li>
+                            <li>Answers validated against source docs with QA &mdash; <strong>-26%</strong> unsupported LLM responses</li>
+                        </ul>
                         <div class="project-tech">
-                            <span>Python</span>
-                            <span>Flask</span>
-                            <span>REST APIs</span>
-                            <span>Docker</span>
-                        </div>
-                        <div class="project-links">
-                            <a href="#" class="project-link"><i class="fab fa-github"></i> GitHub</a>
-                            <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Details</a>
+                            <span>LlamaIndex</span><span>OpenAI API</span><span>ChromaDB</span><span>Embeddings</span>
                         </div>
                     </div>
+                </article>
+
+                <article class="project-card" data-tilt data-reveal>
+                    <div class="project-glow"></div>
+                    <div class="project-image"><i class="fa-solid fa-ticket"></i></div>
+                    <div class="project-content">
+                        <h3>Predictive Issue Classification System</h3>
+                        <p>ML classification system (Scikit-learn, LightGBM, Pandas, SQL) predicting recurring issue categories &mdash; <strong>+29%</strong> ticket prioritization accuracy.</p>
+                        <ul class="project-highlights">
+                            <li>Feature engineering from issue history &amp; resolution notes &mdash; <strong>-32%</strong> analyst prep effort</li>
+                            <li>Precision / recall / F1 / ROC-AUC evaluation &mdash; <strong>+24%</strong> prediction consistency</li>
+                        </ul>
+                        <div class="project-tech">
+                            <span>LightGBM</span><span>Scikit-learn</span><span>SQL</span><span>Feature Engineering</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="project-card" data-tilt data-reveal>
+                    <div class="project-glow"></div>
+                    <div class="project-image"><i class="fa-solid fa-layer-group"></i></div>
+                    <div class="project-content">
+                        <h3>AI Recommendation Workflow for Knowledge Articles</h3>
+                        <p>Recommendation workflow (NLP preprocessing, sentence embeddings, FAISS similarity search, Streamlit) &mdash; <strong>-30%</strong> article lookup time.</p>
+                        <ul class="project-highlights">
+                            <li>Query &harr; issue &harr; resolution matching &mdash; <strong>+27%</strong> recommendation relevance</li>
+                            <li>Threshold tuning with support users &mdash; <strong>-22%</strong> repeated manual escalations</li>
+                        </ul>
+                        <div class="project-tech">
+                            <span>FAISS</span><span>Sentence Embeddings</span><span>Streamlit</span><span>NLP</span>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Leadership -->
+    <section id="leadership" class="leadership">
+        <div class="container">
+            <p class="section-eyebrow" data-reveal>06 &mdash; Leadership &amp; Ownership</p>
+            <h2 class="section-title" data-reveal>More than <span class="gradient-text">the model</span></h2>
+            <p class="section-lede" data-reveal>Shipping AI features end-to-end means owning the problem, not just the notebook.</p>
+            <div class="leadership-grid" data-reveal>
+                <div class="leadership-card">
+                    <i class="fa-solid fa-handshake"></i>
+                    <h3>Cross-Functional Alignment</h3>
+                    <p>Partner directly with product, QA, and data teams to define model inputs, acceptance criteria, and validation rules &mdash; cutting AI feature rework by up to 25% before release.</p>
                 </div>
-                <div class="project-card">
-                    <div class="project-image">
-                        <i class="fas fa-cloud"></i>
-                    </div>
-                    <div class="project-content">
-                        <h3>Cloud Infrastructure Automation</h3>
-                        <p>Infrastructure as Code using Ansible playbooks and Terraform (AWS). Orchestrated EC2 instances with IPv6 for containerized applications, optimizing performance and compliance.</p>
-                        <div class="project-tech">
-                            <span>Terraform</span>
-                            <span>Ansible</span>
-                            <span>AWS</span>
-                            <span>Kubernetes</span>
-                        </div>
-                        <div class="project-links">
-                            <a href="#" class="project-link"><i class="fab fa-github"></i> GitHub</a>
-                            <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Details</a>
-                        </div>
-                    </div>
+                <div class="leadership-card">
+                    <i class="fa-solid fa-crosshairs"></i>
+                    <h3>Technical Decision-Making</h3>
+                    <p>Choose the right tool for the problem &mdash; RAG vs. fine-tuning, classical ML vs. deep learning &mdash; and defend those calls with evaluation data (ROC-AUC, F1, A/B results).</p>
                 </div>
-                <div class="project-card">
-                    <div class="project-image">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <div class="project-content">
-                        <h3>Firewall Security Automation</h3>
-                        <p>Created and validated Layer 7 signatures for Palo Alto firewalls using Wireshark traffic analysis. Enhanced firewall detection capabilities with unit testing and signature writing.</p>
-                        <div class="project-tech">
-                            <span>Palo Alto</span>
-                            <span>Wireshark</span>
-                            <span>Python</span>
-                            <span>Security</span>
-                        </div>
-                        <div class="project-links">
-                            <a href="#" class="project-link"><i class="fab fa-github"></i> GitHub</a>
-                            <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Details</a>
-                        </div>
-                    </div>
+                <div class="leadership-card">
+                    <i class="fa-solid fa-eye"></i>
+                    <h3>Stakeholder Visibility</h3>
+                    <p>Build Streamlit and Gradio prototypes so non-technical stakeholders can see model behavior early, shrinking requirement-clarification cycles by up to 26%.</p>
                 </div>
-                <div class="project-card">
-                    <div class="project-image">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <div class="project-content">
-                        <h3>Network Monitoring & Observability</h3>
-                        <p>Implemented real-time monitoring with Prometheus, Grafana, and ELK stack. Set up dashboards to track IPv6 traffic, latency, and security events with PostgreSQL/Snowflake databases.</p>
-                        <div class="project-tech">
-                            <span>Prometheus</span>
-                            <span>Grafana</span>
-                            <span>ELK Stack</span>
-                            <span>PostgreSQL</span>
-                        </div>
-                        <div class="project-links">
-                            <a href="#" class="project-link"><i class="fab fa-github"></i> GitHub</a>
-                            <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Details</a>
-                        </div>
-                    </div>
+                <div class="leadership-card">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <h3>Responsible AI Ownership</h3>
+                    <p>Own failure-case testing and answer validation against source documents with QA before rollout &mdash; treating "it sounds right" as insufficient for production.</p>
                 </div>
-                <div class="project-card">
-                    <div class="project-image">
-                        <i class="fas fa-sync-alt"></i>
-                    </div>
-                    <div class="project-content">
-                        <h3>CI/CD Pipeline Automation</h3>
-                        <p>Built reusable DevOps pipelines for API testing, deployment, and monitoring using GitLab CI/CD and Jenkins. Deployed Infrastructure-as-Code with Ansible/Terraform for 50% faster deployments.</p>
-                        <div class="project-tech">
-                            <span>GitLab CI/CD</span>
-                            <span>Jenkins</span>
-                            <span>Ansible</span>
-                            <span>Terraform</span>
-                        </div>
-                        <div class="project-links">
-                            <a href="#" class="project-link"><i class="fab fa-github"></i> GitHub</a>
-                            <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Details</a>
-                        </div>
-                    </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Certifications & Education -->
+    <section id="credentials" class="credentials">
+        <div class="container credentials-grid">
+            <div data-reveal>
+                <p class="section-eyebrow">07 &mdash; Certifications</p>
+                <h2 class="section-title">Continuous <span class="gradient-text">upskilling</span></h2>
+                <div class="cert-list">
+                    <div class="cert-item"><i class="fa-solid fa-certificate"></i><div><h4>Machine Learning Specialization</h4><span>Coursera</span></div></div>
+                    <div class="cert-item"><i class="fa-solid fa-certificate"></i><div><h4>Deep Learning Specialization</h4><span>Coursera</span></div></div>
+                    <div class="cert-item"><i class="fa-solid fa-certificate"></i><div><h4>Natural Language Processing Specialization</h4><span>Coursera</span></div></div>
+                    <div class="cert-item"><i class="fa-solid fa-certificate"></i><div><h4>Generative AI with Large Language Models</h4><span>Coursera</span></div></div>
+                    <div class="cert-item"><i class="fa-solid fa-certificate"></i><div><h4>IBM AI Engineering Professional Certificate</h4><span>Coursera</span></div></div>
+                    <div class="cert-item"><i class="fa-solid fa-certificate"></i><div><h4>IBM Generative AI Engineering Professional Certificate</h4><span>Coursera</span></div></div>
                 </div>
-                <div class="project-card">
-                    <div class="project-image">
-                        <i class="fas fa-server"></i>
-                    </div>
-                    <div class="project-content">
-                        <h3>IPv6 Migration & Dual-Stack</h3>
-                        <p>Migrated legacy on-premises networks to dual-stack (IPv4/IPv6). Deployed IPv6 on Palo Alto firewalls, Arista switches, and Kubernetes clusters with automated provisioning.</p>
-                        <div class="project-tech">
-                            <span>IPv6</span>
-                            <span>Palo Alto</span>
-                            <span>Arista</span>
-                            <span>Kubernetes</span>
-                        </div>
-                        <div class="project-links">
-                            <a href="#" class="project-link"><i class="fab fa-github"></i> GitHub</a>
-                            <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Details</a>
-                        </div>
+            </div>
+            <div data-reveal>
+                <p class="section-eyebrow">08 &mdash; Education</p>
+                <h2 class="section-title">Engineering <span class="gradient-text">foundation</span></h2>
+                <div class="edu-card">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <div>
+                        <h4>Bachelor of Technology, Mechanical Engineering</h4>
+                        <span>Jawaharlal Nehru Technological University &middot; Anantapur, India</span>
+                        <p>A core engineering discipline built the analytical and systems-thinking foundation I later applied to AI/ML &mdash; formalized through 6 intensive AI/ML &amp; GenAI certifications and 4+ years of hands-on production work.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Contact Section -->
+    <!-- Contact -->
     <section id="contact" class="contact">
         <div class="container">
-            <h2 class="section-title">Get In Touch</h2>
-            <p class="contact-description">
-                I'm always open to discussing new projects, creative ideas, or opportunities to be part of your visions.
+            <p class="section-eyebrow" data-reveal>09 &mdash; Contact</p>
+            <h2 class="section-title" data-reveal>Let's build something <span class="gradient-text">intelligent</span></h2>
+            <p class="contact-description" data-reveal>
+                Open to AI/ML Engineer roles and interesting problems in Generative AI, RAG, and applied ML. I'm quick to reply.
             </p>
             <div class="contact-content">
-                <div class="contact-info">
-                    <div class="contact-item">
+                <div class="contact-info" data-reveal>
+                    <a class="contact-item" href="mailto:srinath.koyi@applywizard.ai">
                         <i class="fas fa-envelope"></i>
-                        <div>
-                            <h3>Email</h3>
-                            <p><a href="mailto:srinathkoyi5@gmail.com" style="color: var(--text-secondary); text-decoration: none;">srinathkoyi5@gmail.com</a></p>
-                        </div>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-phone"></i>
-                        <div>
-                            <h3>Phone</h3>
-                            <p><a href="tel:+16578779052" style="color: var(--text-secondary); text-decoration: none;">+1 (657) 877-9052</a></p>
-                        </div>
-                    </div>
-                    <div class="contact-item">
+                        <div><h3>Email</h3><p>srinath.koyi@applywizard.ai</p></div>
+                    </a>
+                    <div class="contact-item contact-item--static">
                         <i class="fas fa-map-marker-alt"></i>
-                        <div>
-                            <h3>Location</h3>
-                            <p>Los Angeles, CA, USA</p>
-                        </div>
+                        <div><h3>Location</h3><p>San Jose, CA, USA</p></div>
+                    </div>
+                    <div class="contact-item contact-item--static">
+                        <i class="fas fa-comment-dots"></i>
+                        <div><h3>Quick Contact</h3><p>Use the call / message buttons in the corner &rarr;</p></div>
                     </div>
                 </div>
-                <div class="social-links">
-                    <a href="https://www.linkedin.com/in/srinath-k-6572389590s/" target="_blank" class="social-link" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
-                    <a href="mailto:srinathkoyi5@gmail.com" class="social-link" aria-label="Email"><i class="fas fa-envelope"></i></a>
-                    <a href="tel:+16578779052" class="social-link" aria-label="Phone"><i class="fas fa-phone"></i></a>
+                <div class="social-links" data-reveal>
+                    <a href="https://www.linkedin.com/in/srinath-k-6572389590s/" target="_blank" rel="noopener" class="social-link magnetic" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    <a href="mailto:srinath.koyi@applywizard.ai" class="social-link magnetic" aria-label="Email"><i class="fas fa-envelope"></i></a>
+                    <a href="Srinath-Koyi-AI-ML-Resume.pdf" download class="social-link magnetic" aria-label="Download Resume"><i class="fa-solid fa-arrow-down-to-line"></i></a>
                 </div>
             </div>
         </div>
@@ -339,12 +574,26 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="container">
-            <p>&copy; 2024 Srinath Koyi. All rights reserved.</p>
+        <div class="container footer-inner">
+            <span>&copy; <span id="footer-year">2025</span> Srinath. Built with curiosity, caffeine, and a little too much GSAP.</span>
+            <a href="#home" class="footer-top magnetic"><i class="fa-solid fa-arrow-up"></i></a>
         </div>
     </footer>
 
+    <!-- Floating quick-contact buttons -->
+    <div class="fab-contact" aria-label="Quick contact">
+        <a href="tel:+16578779052" class="fab-btn fab-btn--call magnetic" data-label="Call" aria-label="Call Srinath">
+            <i class="fa-solid fa-phone"></i>
+        </a>
+        <a href="sms:+16578779052" class="fab-btn fab-btn--message magnetic" data-label="Message" aria-label="Message Srinath">
+            <i class="fa-solid fa-comment-dots"></i>
+        </a>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="three-bg.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
-

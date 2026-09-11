@@ -1,120 +1,89 @@
-# Portfolio Website - Srinath Koyi
+# Srinath — AI/ML Engineer Portfolio
 
-A modern, responsive portfolio website showcasing professional experience, skills, and projects.
+A cinematic, single-page portfolio for an AI/ML Engineer profile — Generative AI, RAG pipelines, NLP,
+predictive ML, and cloud/MLOps. Built as a dependency-free static site (no build step) so it deploys
+straight to GitHub Pages.
 
-## Features
+## Highlights
 
-- **Responsive Design**: Works seamlessly on desktop, tablet, and mobile devices
-- **Modern UI**: Dark theme with gradient accents and smooth animations
-- **Smooth Scrolling**: Navigation with smooth scroll effects
-- **Interactive Elements**: Hover effects, animations, and mobile menu
-- **Professional Sections**:
-  - Hero section with introduction
-  - About section with professional summary
-  - Skills section with categorized technologies
-  - Projects section with featured work
-  - Contact section with social links
+- **Cinematic visuals**: dark neon theme, glassmorphism cards, animated gradient text, custom cursor,
+  ambient background glow and grid.
+- **3D hero background**: a live Three.js neural-network particle field (glowing nodes + connecting
+  edges) with slow auto-rotation and mouse parallax — degrades to a static frame under
+  `prefers-reduced-motion` and disappears gracefully if WebGL is unavailable.
+- **Scroll storytelling**: GSAP + ScrollTrigger power scroll-synced reveals and a progress-filled
+  experience timeline; everything has a plain IntersectionObserver/CSS fallback if the CDN scripts
+  fail to load.
+- **Micro-interactions**: magnetic buttons, 3D tilt project cards, animated stat counters, a typed
+  rotating role headline, scroll progress bar, and active-section nav highlighting.
+- **Fully responsive** and accessible: mobile nav, `scroll-margin-top` for anchor links, `<noscript>`
+  fallback, reduced-motion support.
 
-## Getting Started
+## Sections
 
-1. **Open the Website**:
-   - Simply open `index.html` in your web browser
-   - Or use a local server (recommended):
-     ```bash
-     # Using Python
-     python -m http.server 8000
-     
-     # Using Node.js (if you have http-server installed)
-     npx http-server
-     ```
+Hero · About · Skills (incl. Cloud & MLOps) · System Design (RAG architecture) · Experience timeline ·
+Projects · Leadership & Ownership · Certifications & Education · Contact.
 
-2. **View the Portfolio**:
-   - Navigate to `http://localhost:8000` (or the port you specified)
-   - The website will load with all your information
+## Tech Stack
 
-## Customization
-
-### Update Profile Picture
-Replace the profile placeholder icon by:
-1. Adding your photo to the `portfolio-website` folder
-2. Updating the `.profile-placeholder` in `styles.css` to use your image:
-   ```css
-   .profile-placeholder {
-       background-image: url('your-photo.jpg');
-       background-size: cover;
-       background-position: center;
-   }
-   ```
-
-### Update Project Links
-Edit the project links in `index.html`:
-- Replace `#` with your actual GitHub repository URLs
-- Add live demo links if available
-
-### Modify Colors
-Update the color scheme in `styles.css` by changing the CSS variables:
-```css
-:root {
-    --primary-color: #6366f1;
-    --secondary-color: #8b5cf6;
-    /* ... other colors */
-}
-```
+- HTML5, CSS3 (custom properties, Grid/Flexbox)
+- Vanilla JavaScript (no framework, no build tooling)
+- [Three.js](https://threejs.org/) — hero neural-network background (`three-bg.js`)
+- [GSAP](https://gsap.com/) + ScrollTrigger — scroll-linked animation (optional enhancement, guarded)
+- Font Awesome (icons), Google Fonts — Space Grotesk / Inter / JetBrains Mono
 
 ## File Structure
 
 ```
 portfolio-website/
-├── index.html      # Main HTML file
-├── styles.css      # All styling and responsive design
-├── script.js       # Interactive features and animations
-└── README.md       # This file
+├── index.html                      # Page structure & content
+├── styles.css                      # Design system, layout, animations, responsive rules
+├── script.js                       # Interactions: cursor, reveals, counters, nav, tilt, magnetic btns
+├── three-bg.js                     # Three.js neural-network hero background
+├── profile-photo.jpg               # Profile photo
+├── Srinath-Koyi-AI-ML-Resume.pdf   # Downloadable résumé (linked from nav/hero/contact)
+├── CNAME                           # Custom domain (srinathkoyi.cloud)
+└── docs/                           # Deployment & DNS support docs
 ```
 
-## Technologies Used
+## Running Locally
 
-- HTML5
-- CSS3 (with CSS Grid and Flexbox)
-- JavaScript (Vanilla JS)
-- Font Awesome Icons (via CDN)
+No build step required — just serve the folder statically:
 
-## Browser Support
+```bash
+# Python
+python -m http.server 8000
 
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
+# Node
+npx http-server
+```
+
+Then open `http://localhost:8000`.
+
+## Customization
+
+- **Colors / theme**: CSS custom properties at the top of `styles.css` (`:root`).
+- **Content**: edit `index.html` directly — sections are clearly labeled with HTML comments.
+- **Résumé**: replace `Srinath-Koyi-AI-ML-Resume.pdf` and keep the filename, or update the `href`s
+  that reference it (nav, hero, contact).
+- **3D background density**: `NODE_COUNT` / `MAX_EDGES` in `three-bg.js` (auto-reduced on small screens).
 
 ## Deployment
 
-### GitHub Pages (Recommended)
+Deployed via GitHub Pages with a custom domain (`srinathkoyi.cloud`, see `CNAME`). See `docs/DEPLOY.md`
+and `docs/CUSTOM_DOMAIN_SETUP.md` for the original setup notes.
 
-1. **Initial Setup**: Deploy to GitHub Pages at `sree201.github.io`
-   - See `DEPLOY.md` for step-by-step instructions
-   
-2. **Custom Domain**: Set up `srinathkoyi.io` as your custom domain
-   - See `CUSTOM_DOMAIN_SETUP.md` for detailed instructions
-   - Requires purchasing the domain (~$10-15/year)
-   - GitHub provides free SSL certificate
+## Contact
 
-### Other Hosting Options
+- **Email**: srinath.koyi@applywizard.ai
+- **Location**: San Jose, CA, USA
+- **LinkedIn**: [Srinath](https://www.linkedin.com/in/srinath-k-6572389590s/)
+- **GitHub**: [Sree201](https://github.com/Sree201)
 
-- **Netlify**: Drag and drop the folder to Netlify
-- **Vercel**: Connect your GitHub repository
-- **AWS S3**: Upload files to an S3 bucket with static website hosting
-
-## Contact Information
-
-- **Name**: Srinath Koyi
-- **Title**: Sr. Network Security Cloud Engineer
-- **Email**: srinathkoyi5@gmail.com
-- **Phone**: +1 (657) 877-9052
-- **Location**: Los Angeles, CA, USA
-- **LinkedIn**: [Srinath Koyi](https://www.linkedin.com/in/srinath-k-6572389590s/)
-- **Portfolio URL**: https://srinathkoyi.io (after custom domain setup)
-- **GitHub**: [sree201](https://github.com/sree201)
+Phone number is intentionally not shown as text on the page — a floating call / message button
+pair (bottom-right corner, see `.fab-contact` in `index.html`/`styles.css`) links directly to
+`tel:` and `sms:` instead.
 
 ---
 
-© 2024 Srinath Koyi. All rights reserved.
-
+© 2025 Srinath. All rights reserved.
