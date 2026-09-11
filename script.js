@@ -251,7 +251,7 @@
        Typed role text
        ------------------------------------------------------------------- */
     const typedEl = document.getElementById('typed-role');
-    const roles = ['AI/ML Engineer', 'GenAI & LLM Engineer', 'RAG Systems Builder', 'MLOps Practitioner'];
+    const roles = ['AI/ML Engineer', 'GenAI & LLM Engineer', 'RAG Systems Builder', 'Agentic AI Engineer', 'MLOps Practitioner'];
 
     if (typedEl) {
         if (prefersReducedMotion) {
