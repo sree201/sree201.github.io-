@@ -24,6 +24,10 @@
 
         const canvas = document.getElementById('arch-canvas');
         const container = canvas && canvas.closest('.arch-visual');
+        const fallback = document.getElementById('arch-fallback');
+        // Fallback stays visible (its default state) unless we positively confirm
+        // WebGL works below -- so a locked-down browser or a failed CDN load still
+        // shows a complete, static diagram instead of an empty box.
         if (!canvas || !container || typeof THREE === 'undefined') return;
 
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -32,9 +36,10 @@
         try {
             renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: 'low-power' });
         } catch (err) {
-            return; // No WebGL -- the card background still reads fine empty.
+            return; // No WebGL -- the static fallback diagram stays visible instead.
         }
         renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        if (fallback) fallback.classList.add('is-hidden'); // WebGL confirmed working
 
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);

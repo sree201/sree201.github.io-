@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Srinath Koyi — AI/ML Engineer Portfolio — interactions
+   Srinath Koyi, AI/ML Engineer Portfolio: interactions
    Vanilla JS. GSAP/ScrollTrigger are used when available for smoother
    scroll-linked motion, but every feature has a plain-JS/CSS fallback so
    the page stays fully usable if the CDN scripts fail to load.
@@ -284,7 +284,7 @@
     }
 
     /* ---------------------------------------------------------------------
-       Experience timeline — scroll-synced progress line
+       Experience timeline: scroll-synced progress line
        ------------------------------------------------------------------- */
     const timelineEl = document.querySelector('.timeline');
     const timelineFill = document.getElementById('timeline-fill');
@@ -375,7 +375,7 @@
         ingestion: {
             icon: 'fa-solid fa-file-lines',
             title: 'Ingestion',
-            body: "Every RAG pipeline starts with pulling in the raw source material — policy documents, support tickets, and knowledge-base articles for the Enterprise Document Intelligence Assistant I built. I normalize formats and strip noise here so nothing downstream trips over a malformed PDF or an inconsistent field.",
+            body: "Every RAG pipeline starts with pulling in the raw source material: policy documents, support tickets, and knowledge-base articles for the Enterprise Document Intelligence Assistant I built. I normalize formats and strip noise here so nothing downstream trips over a malformed PDF or an inconsistent field.",
             proof: 'Enterprise Document Intelligence Assistant'
         },
         chunking: {
@@ -387,7 +387,7 @@
         embeddings: {
             icon: 'fa-solid fa-shapes',
             title: 'Embeddings',
-            body: "Each chunk gets converted into a vector embedding — using OpenAI or Azure OpenAI embedding models depending on the deployment — that captures its semantic meaning. That's what lets the system match a question to the right content even when the wording doesn't overlap at all.",
+            body: "Each chunk gets converted into a vector embedding, using OpenAI or Azure OpenAI embedding models depending on the deployment, that captures its semantic meaning. That's what lets the system match a question to the right content even when the wording doesn't overlap at all.",
             proof: 'OpenAI API / Azure OpenAI'
         },
         vectorstore: {
@@ -411,7 +411,7 @@
         validated: {
             icon: 'fa-solid fa-circle-check',
             title: 'Validated Answer',
-            body: 'Before anything ships, I validate generated answers against the source documents alongside QA — "it sounds right" isn\'t good enough for production. That validation loop is what reduced unsupported LLM responses before rollout.',
+            body: 'Before anything ships, I validate generated answers against the source documents alongside QA. "It sounds right" isn\'t good enough for production. That validation loop is what reduced unsupported LLM responses before rollout.',
             proof: '-26% unsupported LLM responses'
         }
     };
@@ -461,10 +461,18 @@
        on GitHub Pages to check a password server-side. Anyone determined
        could bypass it via browser dev tools. The point isn't cryptographic
        security; it's a polite "ask first" ritual for recruiters, plus a
-       code you can hand out personally after a real conversation. Change
-       the code below to whatever you like, whenever you like.
+       code you can hand out personally after a real conversation.
+
+       ARCH_ACCESS_CODES is a LIST, not one shared code -- hand a different
+       entry to each recruiter (e.g. one per company) so you know who's
+       using which, and can stop mentioning one without affecting the
+       others. Add or remove entries any time; no build step needed.
+       Access auto-expires ARCH_UNLOCK_TTL_MS after unlocking, at which
+       point the section re-locks itself and the code has to be re-entered
+       -- this happens live even if the tab stays open.
        ------------------------------------------------------------------- */
-    const ARCH_ACCESS_CODE = 'RECRUITER2026';
+    const ARCH_ACCESS_CODES = ['RECRUITER2026', 'RECRUITER-ALPHA', 'RECRUITER-BETA', 'RECRUITER-GAMMA'];
+    const ARCH_UNLOCK_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
     const archGate = document.getElementById('arch-gate');
     const archUnlocked = document.getElementById('arch-unlocked');
@@ -473,9 +481,12 @@
     const archCodeForm = document.getElementById('arch-code-form');
     const archCodeInput = document.getElementById('arch-code-input');
     const archCodeError = document.getElementById('arch-code-error');
+    const archViewBtn = document.getElementById('arch-view-btn');
+    const archDiagramModal = document.getElementById('arch-diagram-modal');
 
     const ARCH_LAYERS = ['client', 'api', 'ai', 'data', 'infra'];
     let archLegendTimer = null;
+    let archUnlockTimer = null;
 
     function startLegendCycle() {
         if (archLegendTimer) return;
@@ -492,17 +503,70 @@
         if (!prefersReducedMotion) archLegendTimer = setInterval(tick, 2600);
     }
 
-    function unlockArchitecture() {
-        if (!archGate || !archUnlocked) return;
-        archGate.hidden = true;
-        archUnlocked.hidden = false;
-        try { localStorage.setItem('arch_unlocked', '1'); } catch (e) { /* private mode etc. */ }
+    function stopLegendCycle() {
+        if (archLegendTimer) {
+            clearInterval(archLegendTimer);
+            archLegendTimer = null;
+        }
+    }
+
+    function closeArchModal() {
+        if (archDiagramModal) archDiagramModal.hidden = true;
+        document.body.style.overflow = '';
+    }
+
+    function openArchModal() {
+        if (!archDiagramModal) return;
+        archDiagramModal.hidden = false;
+        document.body.style.overflow = 'hidden';
         if (window.initArchScene) window.initArchScene();
         startLegendCycle();
     }
 
+    function lockArchitecture() {
+        if (archGate) archGate.hidden = false;
+        if (archUnlocked) archUnlocked.hidden = true;
+        closeArchModal();
+        stopLegendCycle();
+        if (archUnlockTimer) {
+            clearTimeout(archUnlockTimer);
+            archUnlockTimer = null;
+        }
+        try { localStorage.removeItem('arch_unlocked_at'); } catch (e) { /* private mode etc. */ }
+        if (archCodeInput) archCodeInput.value = '';
+        if (archCodeError) archCodeError.hidden = true;
+    }
+
+    function scheduleAutoLock(remainingMs) {
+        if (archUnlockTimer) clearTimeout(archUnlockTimer);
+        archUnlockTimer = setTimeout(lockArchitecture, Math.max(remainingMs, 0));
+    }
+
+    function unlockArchitecture(preserveTimestamp) {
+        if (!archGate || !archUnlocked) return;
+        archGate.hidden = true;
+        archUnlocked.hidden = false;
+
+        const now = Date.now();
+        let unlockedAt = now;
+        if (preserveTimestamp) {
+            try {
+                const stored = parseInt(localStorage.getItem('arch_unlocked_at'), 10);
+                if (!isNaN(stored)) unlockedAt = stored;
+            } catch (e) { /* private mode etc. */ }
+        }
+        try { localStorage.setItem('arch_unlocked_at', String(unlockedAt)); } catch (e) { /* private mode etc. */ }
+        scheduleAutoLock(ARCH_UNLOCK_TTL_MS - (now - unlockedAt));
+    }
+
+    // Restore an unexpired unlock on repeat visits; clean up a stale one.
     try {
-        if (localStorage.getItem('arch_unlocked') === '1') unlockArchitecture();
+        const stored = parseInt(localStorage.getItem('arch_unlocked_at'), 10);
+        if (!isNaN(stored) && Date.now() - stored < ARCH_UNLOCK_TTL_MS) {
+            unlockArchitecture(true);
+        } else if (!isNaN(stored)) {
+            localStorage.removeItem('arch_unlocked_at');
+        }
     } catch (e) { /* private mode etc. */ }
 
     if (archRequestBtn) {
@@ -524,12 +588,24 @@
         archCodeForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const entered = (archCodeInput.value || '').trim().toUpperCase();
-            if (entered === ARCH_ACCESS_CODE) {
+            if (ARCH_ACCESS_CODES.includes(entered)) {
                 if (archCodeError) archCodeError.hidden = true;
                 unlockArchitecture();
+                openArchModal();
             } else if (archCodeError) {
                 archCodeError.hidden = false;
             }
+        });
+    }
+
+    if (archViewBtn) archViewBtn.addEventListener('click', openArchModal);
+
+    if (archDiagramModal) {
+        archDiagramModal.querySelectorAll('[data-close-arch-modal]').forEach((el) => {
+            el.addEventListener('click', closeArchModal);
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !archDiagramModal.hidden) closeArchModal();
         });
     }
 
@@ -538,19 +614,19 @@
        ------------------------------------------------------------------- */
     const GLOBE_CONTENT = {
         india: {
-            title: 'India — SureshBy Technologies',
-            body: 'Where it started (2021–2023): supervised ML models, reusable pipelines, and NLP workflows for recurring operational patterns.'
+            title: 'India: SureshBy Technologies',
+            body: 'Where it started (2021-2023): supervised ML models, reusable pipelines, and NLP workflows for recurring operational patterns.'
         },
         azure: {
-            title: 'Azure — GenAI & LLM workloads',
+            title: 'Azure: GenAI & LLM workloads',
             body: 'Azure OpenAI Service and Azure ML power the RAG summarization and knowledge-assistant workflows built at Lumen Technologies and Infinite Computer Solutions.'
         },
         aws: {
-            title: 'AWS — Inference & storage',
+            title: 'AWS: Inference & storage',
             body: 'EC2, S3, Lambda, and SageMaker for containerized FastAPI inference services and batch prediction jobs.'
         },
         gcp: {
-            title: 'Google Cloud — Vertex AI',
+            title: 'Google Cloud: Vertex AI',
             body: 'Secondary ML tooling and experimentation on Vertex AI, rounding out cross-cloud familiarity.'
         }
     };
