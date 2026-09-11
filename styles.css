@@ -1433,27 +1433,12 @@ section { position: relative; padding: 76px 0; z-index: 1; scroll-margin-top: 90
 }
 .stage-close:hover { color: var(--text-primary); border-color: var(--card-border-hover); }
 
-.stage-breadcrumb {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 1.4rem;
-}
-
-.stage-breadcrumb span {
-    flex: 1;
-    height: 3px;
-    border-radius: 3px;
-    background: rgba(255, 255, 255, 0.1);
-    transition: background 0.3s;
-}
-.stage-breadcrumb span.is-active { background: var(--gradient-1); }
-.stage-breadcrumb span.is-done { background: rgba(0, 229, 255, 0.35); }
-
 .stage-panel-head {
     display: flex;
     align-items: flex-start;
     gap: 1rem;
     margin-bottom: 1rem;
+    margin-top: 0.6rem;
 }
 
 .stage-panel-icon {
@@ -1502,33 +1487,7 @@ section { position: relative; padding: 76px 0; z-index: 1; scroll-margin-top: 90
     border: 1px solid rgba(0, 229, 255, 0.22);
     padding: 7px 13px;
     border-radius: 999px;
-    margin-bottom: 1.5rem;
 }
-
-.stage-panel-nav {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    border-top: 1px solid var(--card-border);
-    padding-top: 1.1rem;
-}
-
-.stage-nav-btn {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid var(--card-border);
-    color: var(--text-secondary);
-    padding: 8px 16px;
-    border-radius: 999px;
-    font-family: inherit;
-    font-size: 0.84rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    transition: color 0.2s, border-color 0.2s;
-}
-.stage-nav-btn:hover { color: var(--text-primary); border-color: var(--card-border-hover); }
-.stage-nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
 @media (max-width: 480px) {
     .stage-modal { padding: 12px; }

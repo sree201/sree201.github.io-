@@ -371,7 +371,6 @@
     /* ---------------------------------------------------------------------
        RAG pipeline stage detail popup
        ------------------------------------------------------------------- */
-    const STAGE_ORDER = ['ingestion', 'chunking', 'embeddings', 'vectorstore', 'retrieval', 'llm', 'validated'];
     const STAGE_CONTENT = {
         ingestion: {
             icon: 'fa-solid fa-file-lines',
@@ -418,39 +417,20 @@
     };
 
     const stageModal = document.getElementById('stage-modal');
-    const stageBreadcrumb = document.getElementById('stage-breadcrumb');
     const stagePanelIcon = document.getElementById('stage-panel-icon');
     const stagePanelTitle = document.getElementById('stage-panel-title');
     const stagePanelBody = document.getElementById('stage-panel-body');
     const stagePanelProof = document.getElementById('stage-panel-proof');
-    const stagePrevBtn = document.getElementById('stage-prev');
-    const stageNextBtn = document.getElementById('stage-next');
-    let currentStageIndex = 0;
 
-    function renderStage(index) {
-        const key = STAGE_ORDER[index];
+    function openStage(key) {
         const data = STAGE_CONTENT[key];
-        if (!data) return;
-        currentStageIndex = index;
+        if (!stageModal || !data) return;
 
         stagePanelIcon.innerHTML = `<i class="${data.icon}"></i>`;
         stagePanelTitle.textContent = data.title;
         stagePanelBody.textContent = data.body;
         stagePanelProof.innerHTML = `<i class="fa-solid fa-chart-line"></i> ${data.proof}`;
 
-        stageBreadcrumb.innerHTML = STAGE_ORDER.map((_, i) => {
-            const cls = i === index ? 'is-active' : (i < index ? 'is-done' : '');
-            return `<span class="${cls}"></span>`;
-        }).join('');
-
-        stagePrevBtn.disabled = index === 0;
-        stageNextBtn.disabled = index === STAGE_ORDER.length - 1;
-    }
-
-    function openStage(key) {
-        if (!stageModal) return;
-        const index = Math.max(STAGE_ORDER.indexOf(key), 0);
-        renderStage(index);
         stageModal.hidden = false;
         document.body.style.overflow = 'hidden';
     }
@@ -468,12 +448,6 @@
     if (stageModal) {
         stageModal.querySelectorAll('[data-close-stage]').forEach((el) => {
             el.addEventListener('click', closeStage);
-        });
-        stagePrevBtn.addEventListener('click', () => {
-            if (currentStageIndex > 0) renderStage(currentStageIndex - 1);
-        });
-        stageNextBtn.addEventListener('click', () => {
-            if (currentStageIndex < STAGE_ORDER.length - 1) renderStage(currentStageIndex + 1);
         });
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && !stageModal.hidden) closeStage();
