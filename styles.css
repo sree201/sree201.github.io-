@@ -1126,53 +1126,87 @@ section { position: relative; padding: 76px 0; z-index: 1; scroll-margin-top: 90
 
 .arch-visual {
     position: relative;
-    height: 420px;
+    min-height: 600px;
     background: var(--card);
     border: 1px solid var(--card-border);
     border-radius: var(--radius-lg);
-    overflow: hidden;
+    padding: 2.4rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.arch-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
-
-/* Guaranteed-visible static diagram -- shown by default, faded out only once the
-   3D scene is confirmed rendering. If WebGL is unavailable or fails for any reason,
-   this stays visible so the section is never an empty box. */
-.arch-fallback {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
+/* Isometric-style labeled architecture diagram. Pure CSS/HTML, no WebGL or any
+   external dependency -- guaranteed to render identically for every visitor,
+   on every browser, every time. Each box is self-labeled (icon + name + key
+   tech) so it reads as a real diagram without needing the side legend to
+   make sense of it. */
+.iso-diagram {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 0;
-    padding: 1.5rem;
-    transition: opacity 0.6s var(--ease);
-}
-.arch-fallback.is-hidden { opacity: 0; pointer-events: none; }
-
-.arch-fallback-layer {
-    display: flex;
-    align-items: center;
-    gap: 0.7rem;
     width: 100%;
-    max-width: 280px;
-    padding: 0.7rem 1.2rem;
-    border-radius: 999px;
-    font-size: 0.84rem;
-    font-weight: 600;
-    color: #04060c;
-    background: linear-gradient(90deg, hsl(calc(190 - var(--i) * 25), 90%, 60%), hsl(calc(190 - var(--i) * 25 - 20), 85%, 65%));
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+    max-width: 300px;
 }
-.arch-fallback-layer i { font-size: 0.95rem; }
 
-.arch-fallback-connector {
-    width: 2px;
-    height: 18px;
-    background: linear-gradient(var(--cyan), var(--violet));
-    opacity: 0.5;
+.iso-box {
+    width: 100%;
+    animation: isoFloat 4s ease-in-out infinite;
+    animation-delay: calc(var(--i) * 0.25s);
+}
+
+@keyframes isoFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .iso-box { animation: none; }
+}
+
+.iso-box-face {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.3rem;
+    padding: 1rem 1.2rem;
+    border-radius: var(--radius-md);
+    color: #04060c;
+    background: linear-gradient(135deg, hsl(calc(190 + var(--i) * 38), 85%, 62%), hsl(calc(190 + var(--i) * 38 + 20), 78%, 55%));
+    box-shadow:
+        0 10px 0 -2px hsl(calc(190 + var(--i) * 38 + 20), 60%, 28%),
+        0 16px 30px rgba(0, 0, 0, 0.35);
+    transform: perspective(700px) rotateX(6deg);
+    transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease);
+}
+
+.iso-box:hover .iso-box-face,
+.iso-box.is-active .iso-box-face {
+    transform: perspective(700px) rotateX(0deg) translateY(-3px) scale(1.04);
+    box-shadow:
+        0 13px 0 -2px hsl(calc(190 + var(--i) * 38 + 20), 60%, 28%),
+        0 22px 40px rgba(0, 0, 0, 0.4);
+}
+
+.iso-box-face i { font-size: 1.3rem; margin-bottom: 0.1rem; }
+.iso-box-face h4 { font-size: 0.9rem; font-weight: 700; }
+.iso-box-face span { font-size: 0.7rem; font-weight: 500; opacity: 0.85; }
+
+.iso-box--accent .iso-box-face {
+    background: linear-gradient(135deg, #ec4899, #a855f7);
+    box-shadow: 0 10px 0 -2px #6b1e56, 0 16px 30px rgba(0, 0, 0, 0.35);
+}
+.iso-box--accent:hover .iso-box-face,
+.iso-box--accent.is-active .iso-box-face {
+    box-shadow: 0 13px 0 -2px #6b1e56, 0 22px 40px rgba(0, 0, 0, 0.4);
+}
+
+.iso-arrow {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    padding: 0.35rem 0;
+    opacity: 0.55;
 }
 
 .arch-legend {

@@ -21,7 +21,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=20260911j">
+    <link rel="stylesheet" href="styles.css?v=20260911l">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <noscript><style>
         [data-reveal] { opacity: 1 !important; transform: none !important; }
@@ -126,7 +126,7 @@
                     <span class="orbit-chip orbit-chip--6"><i class="fa-solid fa-robot"></i></span>
                 </div>
                 <div class="profile-image">
-                    <img src="profile-photo.jpg?v=20260911j" alt="Srinath - AI/ML Engineer" id="profile-img">
+                    <img src="profile-photo.jpg?v=20260911l" alt="Srinath - AI/ML Engineer" id="profile-img">
                     <div class="profile-placeholder" id="profile-placeholder">
                         <i class="fas fa-user"></i>
                     </div>
@@ -411,18 +411,47 @@
             </div>
             <div class="arch-diagram-scroll">
                 <div class="arch-visual">
-                    <div class="arch-fallback" id="arch-fallback">
-                        <div class="arch-fallback-layer" data-layer="client" style="--i:0"><i class="fa-solid fa-display"></i><span>Client / Interface</span></div>
-                        <div class="arch-fallback-connector"></div>
-                        <div class="arch-fallback-layer" data-layer="api" style="--i:1"><i class="fa-solid fa-server"></i><span>API / Serving</span></div>
-                        <div class="arch-fallback-connector"></div>
-                        <div class="arch-fallback-layer" data-layer="ai" style="--i:2"><i class="fa-solid fa-brain"></i><span>AI/ML Orchestration</span></div>
-                        <div class="arch-fallback-connector"></div>
-                        <div class="arch-fallback-layer" data-layer="data" style="--i:3"><i class="fa-solid fa-database"></i><span>Data &amp; Retrieval</span></div>
-                        <div class="arch-fallback-connector"></div>
-                        <div class="arch-fallback-layer" data-layer="infra" style="--i:4"><i class="fa-solid fa-cloud"></i><span>Cloud &amp; MLOps</span></div>
+                    <div class="iso-diagram" id="iso-diagram">
+                        <div class="iso-box" data-layer="client" style="--i:0">
+                            <div class="iso-box-face">
+                                <i class="fa-solid fa-display"></i>
+                                <h4>Client / Interface</h4>
+                                <span>Streamlit &middot; Gradio &middot; REST</span>
+                            </div>
+                        </div>
+                        <div class="iso-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+                        <div class="iso-box" data-layer="api" style="--i:1">
+                            <div class="iso-box-face">
+                                <i class="fa-solid fa-server"></i>
+                                <h4>API / Serving</h4>
+                                <span>FastAPI &middot; REST APIs</span>
+                            </div>
+                        </div>
+                        <div class="iso-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+                        <div class="iso-box" data-layer="ai" style="--i:2">
+                            <div class="iso-box-face">
+                                <i class="fa-solid fa-brain"></i>
+                                <h4>AI/ML Orchestration</h4>
+                                <span>LangChain &middot; Hugging Face &middot; XGBoost</span>
+                            </div>
+                        </div>
+                        <div class="iso-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+                        <div class="iso-box" data-layer="data" style="--i:3">
+                            <div class="iso-box-face">
+                                <i class="fa-solid fa-database"></i>
+                                <h4>Data &amp; Retrieval</h4>
+                                <span>FAISS &middot; ChromaDB &middot; PostgreSQL</span>
+                            </div>
+                        </div>
+                        <div class="iso-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+                        <div class="iso-box iso-box--accent" data-layer="infra" style="--i:4">
+                            <div class="iso-box-face">
+                                <i class="fa-solid fa-cloud"></i>
+                                <h4>Cloud &amp; MLOps</h4>
+                                <span>Azure &middot; AWS &middot; Docker &middot; K8s</span>
+                            </div>
+                        </div>
                     </div>
-                    <canvas id="arch-canvas" class="arch-canvas"></canvas>
                 </div>
                 <div class="arch-legend" id="arch-legend">
                     <div class="arch-legend-item" data-layer="client">
@@ -729,7 +758,7 @@
     <footer class="footer">
         <div class="container footer-inner">
             <span>&copy; <span id="footer-year">2025</span> Srinath. Built with curiosity, caffeine, and a little too much GSAP.</span>
-            <a href="#home" class="footer-top magnetic"><i class="fa-solid fa-arrow-up"></i></a>
+            <a href="#home" class="footer-top magnetic"><i class="fa-solid fa-arrow-down"></i></a>
         </div>
     </footer>
 
@@ -792,8 +821,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-    <script src="three-bg.js?v=20260911j"></script>
-    <script src="architecture-3d.js?v=20260911j"></script>
-    <script src="script.js?v=20260911j"></script>
+    <script src="three-bg.js?v=20260911l"></script>
+    <script src="script.js?v=20260911l"></script>
 </body>
 </html>

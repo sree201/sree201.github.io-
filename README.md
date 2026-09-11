@@ -27,11 +27,12 @@ Leadership & Ownership · Certifications & Education · Contact.
 
 ### The gated Infrastructure section
 
-The full system-architecture diagram (a 3D layered Three.js stack: Client, API, AI/ML, Data,
-Cloud/MLOps) and the global-footprint map open in a **popup window** and are behind a **soft
-access gate**, not real authentication. GitHub Pages has no backend, so there's nothing to check
-a password against server-side. It exists to create an "ask first" moment for recruiters, not to
-cryptographically protect anything; anyone who opens browser dev tools can bypass it.
+The full system-architecture diagram (an isometric-style labeled stack: Client, API, AI/ML, Data,
+Cloud/MLOps, each box self-labeled with its key tech) and the global-footprint map open in a
+**popup window** and are behind a **soft access gate**, not real authentication. GitHub Pages has
+no backend, so there's nothing to check a password against server-side. It exists to create an
+"ask first" moment for recruiters, not to cryptographically protect anything; anyone who opens
+browser dev tools can bypass it.
 
 - Visitors click **Request Access**, which opens the message chat box pre-filled with a
   recruiter-intro message (sent to you via WhatsApp or email, whichever they pick).
@@ -44,16 +45,17 @@ cryptographically protect anything; anyone who opens browser dev tools can bypas
 - **Access auto-expires**: `ARCH_UNLOCK_TTL_MS` (5 minutes by default) controls how long an unlock
   lasts. It's tracked by timestamp in `localStorage`, so it survives a page reload within that
   window but re-locks itself automatically, live, once the window closes, even if the tab stays open.
-- **Guaranteed-visible fallback**: if WebGL is unavailable or fails for any reason, a static
-  layered diagram (plain HTML/CSS, no 3D dependency) stays visible instead of an empty box. The
-  3D canvas only replaces it once `architecture-3d.js` confirms a WebGL context was actually created.
+- **The diagram itself is plain CSS/HTML** (`.iso-diagram` / `.iso-box` in `styles.css`) with no
+  WebGL, Three.js, or any external dependency at all -- it renders identically for every visitor,
+  on every browser, every time. (An earlier version used a Three.js/WebGL 3D scene; it was dropped
+  after testing showed WebGL failures render as a silent empty box with no fallback message, which
+  is a real risk on locked-down browsers -- not worth it for a diagram this important.)
 
 ## Tech Stack
 
-- HTML5, CSS3 (custom properties, Grid/Flexbox)
+- HTML5, CSS3 (custom properties, Grid/Flexbox, isometric-style CSS 3D for the architecture diagram)
 - Vanilla JavaScript (no framework, no build tooling)
-- [Three.js](https://threejs.org/): hero neural-network background (`three-bg.js`) and the gated
-  3D layered architecture diagram (`architecture-3d.js`)
+- [Three.js](https://threejs.org/): hero neural-network background only (`three-bg.js`)
 - [GSAP](https://gsap.com/) + ScrollTrigger: scroll-linked animation (optional enhancement, guarded)
 - Font Awesome (icons), Google Fonts: Space Grotesk / Inter / JetBrains Mono
 
@@ -65,7 +67,6 @@ portfolio-website/
 ├── styles.css                      # Design system, layout, animations, responsive rules
 ├── script.js                       # Interactions: cursor, reveals, counters, nav, tilt, magnetic btns
 ├── three-bg.js                     # Three.js neural-network hero background
-├── architecture-3d.js               # Three.js 3D layered architecture diagram (gated section)
 ├── profile-photo.jpg               # Profile photo
 ├── Srinath-Koyi-AI-ML-Resume.pdf   # Downloadable résumé (linked from nav/hero/contact)
 ├── CNAME                           # Custom domain (srinathkoyi.cloud)
@@ -96,7 +97,7 @@ Then open `http://localhost:8000`.
 
 ### Cache-busting (important!)
 
-`styles.css`, `script.js`, `three-bg.js`, `architecture-3d.js`, and `profile-photo.jpg` are loaded
+`styles.css`, `script.js`, `three-bg.js`, and `profile-photo.jpg` are loaded
 with a `?v=YYYYMMDDx`
 query string in `index.html`. GitHub Pages' CDN caches these files for ~10 minutes by filename, so
 if you edit any of them **without** bumping that version string, visitors (and your own browser)

@@ -491,12 +491,16 @@
     function startLegendCycle() {
         if (archLegendTimer) return;
         const items = document.querySelectorAll('.arch-legend-item');
+        const boxes = document.querySelectorAll('.iso-box');
         let i = 0;
         function tick() {
             items.forEach((el) => el.classList.remove('is-active'));
-            const current = document.querySelector(`.arch-legend-item[data-layer="${ARCH_LAYERS[i]}"]`);
-            if (current) current.classList.add('is-active');
-            if (window.setArchActiveLayer) window.setArchActiveLayer(ARCH_LAYERS[i]);
+            boxes.forEach((el) => el.classList.remove('is-active'));
+            const layer = ARCH_LAYERS[i];
+            const currentItem = document.querySelector(`.arch-legend-item[data-layer="${layer}"]`);
+            const currentBox = document.querySelector(`.iso-box[data-layer="${layer}"]`);
+            if (currentItem) currentItem.classList.add('is-active');
+            if (currentBox) currentBox.classList.add('is-active');
             i = (i + 1) % ARCH_LAYERS.length;
         }
         tick();
@@ -519,7 +523,6 @@
         if (!archDiagramModal) return;
         archDiagramModal.hidden = false;
         document.body.style.overflow = 'hidden';
-        if (window.initArchScene) window.initArchScene();
         startLegendCycle();
     }
 
