@@ -57,7 +57,7 @@
         <div class="container navbar-inner">
             <a href="#home" class="nav-brand">
                 <span class="nav-brand-mark">SK</span>
-                <span class="nav-brand-text">Srinath<em>.ai</em></span>
+                <span class="nav-brand-text">Srinath</span>
             </a>
             <ul class="nav-menu" id="nav-menu">
                 <li><a href="#home" class="nav-link active" data-nav="home">Home</a></li>
@@ -68,7 +68,7 @@
                 <li><a href="#contact" class="nav-link" data-nav="contact">Contact</a></li>
             </ul>
             <a href="Srinath-Koyi-AI-ML-Resume.pdf" class="btn btn-ghost nav-resume" download>
-                <i class="fa-solid fa-arrow-down-to-line"></i> Resume
+                <i class="fa-solid fa-download"></i> Resume
             </a>
             <div class="hamburger" id="hamburger" aria-label="Toggle menu" role="button" tabindex="0">
                 <span></span><span></span><span></span>
@@ -96,7 +96,7 @@
                 <div class="hero-buttons" data-reveal>
                     <a href="#projects" class="btn btn-primary magnetic"><span>View My Work</span> <i class="fa-solid fa-arrow-right"></i></a>
                     <a href="#contact" class="btn btn-secondary magnetic"><span>Get In Touch</span></a>
-                    <a href="Srinath-Koyi-AI-ML-Resume.pdf" class="btn btn-ghost magnetic" download><span>Download Résumé</span> <i class="fa-solid fa-arrow-down-to-line"></i></a>
+                    <a href="Srinath-Koyi-AI-ML-Resume.pdf" class="btn btn-ghost magnetic" download><span>Download Résumé</span> <i class="fa-solid fa-download"></i></a>
                 </div>
                 <div class="hero-stats" data-reveal>
                     <div class="hero-stat">
@@ -112,7 +112,7 @@
                         <span class="hero-stat-label">Search Accuracy Gain</span>
                     </div>
                     <div class="hero-stat">
-                        <span class="hero-stat-num" data-counter data-target="6" data-suffix="">0</span>
+                        <span class="hero-stat-num" data-counter data-target="4" data-suffix="">0</span>
                         <span class="hero-stat-label">AI/ML Certifications</span>
                     </div>
                 </div>
@@ -522,8 +522,6 @@
                     <div class="cert-item"><i class="fa-solid fa-certificate"></i><div><h4>Deep Learning Specialization</h4><span>Coursera</span></div></div>
                     <div class="cert-item"><i class="fa-solid fa-certificate"></i><div><h4>Natural Language Processing Specialization</h4><span>Coursera</span></div></div>
                     <div class="cert-item"><i class="fa-solid fa-certificate"></i><div><h4>Generative AI with Large Language Models</h4><span>Coursera</span></div></div>
-                    <div class="cert-item"><i class="fa-solid fa-certificate"></i><div><h4>IBM AI Engineering Professional Certificate</h4><span>Coursera</span></div></div>
-                    <div class="cert-item"><i class="fa-solid fa-certificate"></i><div><h4>IBM Generative AI Engineering Professional Certificate</h4><span>Coursera</span></div></div>
                 </div>
             </div>
             <div data-reveal>
@@ -533,8 +531,7 @@
                     <i class="fa-solid fa-graduation-cap"></i>
                     <div>
                         <h4>Bachelor of Technology, Mechanical Engineering</h4>
-                        <span>Jawaharlal Nehru Technological University &middot; Anantapur, India</span>
-                        <p>A core engineering discipline built the analytical and systems-thinking foundation I later applied to AI/ML &mdash; formalized through 6 intensive AI/ML &amp; GenAI certifications and 4+ years of hands-on production work.</p>
+                        <p>A core engineering discipline built the analytical and systems-thinking foundation I later applied to AI/ML &mdash; formalized through focused AI/ML &amp; GenAI certifications and 4+ years of hands-on production work.</p>
                     </div>
                 </div>
             </div>
@@ -567,7 +564,7 @@
                 <div class="social-links" data-reveal>
                     <a href="https://www.linkedin.com/in/srinath-k-6572389590s/" target="_blank" rel="noopener" class="social-link magnetic" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
                     <a href="mailto:srinath.koyi@applywizard.ai" class="social-link magnetic" aria-label="Email"><i class="fas fa-envelope"></i></a>
-                    <a href="Srinath-Koyi-AI-ML-Resume.pdf" download class="social-link magnetic" aria-label="Download Resume"><i class="fa-solid fa-arrow-down-to-line"></i></a>
+                    <a href="Srinath-Koyi-AI-ML-Resume.pdf" download class="social-link magnetic" aria-label="Download Resume"><i class="fa-solid fa-download"></i></a>
                 </div>
             </div>
         </div>
@@ -583,12 +580,41 @@
 
     <!-- Floating quick-contact buttons -->
     <div class="fab-contact" aria-label="Quick contact">
-        <a href="tel:+16578779052" class="fab-btn fab-btn--call magnetic" data-label="Call" aria-label="Call Srinath">
+        <a href="tel:+12092458426" class="fab-btn fab-btn--call magnetic" data-label="Call" aria-label="Call Srinath">
             <i class="fa-solid fa-phone"></i>
         </a>
-        <a href="sms:+16578779052" class="fab-btn fab-btn--message magnetic" data-label="Message" aria-label="Message Srinath">
+        <button type="button" id="fab-message" class="fab-btn fab-btn--message magnetic" data-label="Message" aria-label="Message Srinath" aria-haspopup="dialog" aria-controls="chat-modal">
             <i class="fa-solid fa-comment-dots"></i>
-        </a>
+        </button>
+    </div>
+
+    <!-- One-to-one message chat box -->
+    <div class="chat-modal" id="chat-modal" hidden>
+        <div class="chat-modal-backdrop" data-close-chat></div>
+        <div class="chat-panel" role="dialog" aria-modal="true" aria-labelledby="chat-panel-title">
+            <div class="chat-panel-header">
+                <span class="chat-avatar"><i class="fa-solid fa-user"></i></span>
+                <div class="chat-panel-title-group">
+                    <h3 id="chat-panel-title">Message Srinath</h3>
+                    <span class="chat-status"><span class="status-dot"></span> Usually replies within a day</span>
+                </div>
+                <button type="button" class="chat-close" data-close-chat aria-label="Close chat"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="chat-body">
+                <div class="chat-bubble chat-bubble--in">Hey! Type a message below and send it straight to me &mdash; no forms, no waiting.</div>
+            </div>
+            <form class="chat-form" id="chat-form">
+                <textarea id="chat-message" class="chat-textarea" placeholder="Type your message&hellip;" rows="3" required></textarea>
+                <div class="chat-form-actions">
+                    <button type="submit" class="btn btn-primary chat-send" data-send-channel="whatsapp">
+                        <span>Send on WhatsApp</span> <i class="fa-brands fa-whatsapp"></i>
+                    </button>
+                    <button type="submit" class="btn btn-ghost chat-send" data-send-channel="email">
+                        <span>Send by Email</span> <i class="fa-solid fa-envelope"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>

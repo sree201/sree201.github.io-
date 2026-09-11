@@ -369,6 +369,62 @@
     }
 
     /* ---------------------------------------------------------------------
+       One-to-one message chat box
+       ------------------------------------------------------------------- */
+    const CONTACT_PHONE = '12092458426'; // digits only, for the WhatsApp deep link
+    const CONTACT_EMAIL = 'srinath.koyi@applywizard.ai';
+
+    const fabMessageBtn = document.getElementById('fab-message');
+    const chatModal = document.getElementById('chat-modal');
+    const chatForm = document.getElementById('chat-form');
+    const chatTextarea = document.getElementById('chat-message');
+
+    function openChat() {
+        if (!chatModal) return;
+        chatModal.hidden = false;
+        document.body.style.overflow = 'hidden';
+        setTimeout(() => chatTextarea && chatTextarea.focus(), 50);
+    }
+
+    function closeChat() {
+        if (!chatModal) return;
+        chatModal.hidden = true;
+        document.body.style.overflow = '';
+    }
+
+    if (fabMessageBtn && chatModal) {
+        fabMessageBtn.addEventListener('click', openChat);
+        chatModal.querySelectorAll('[data-close-chat]').forEach((el) => {
+            el.addEventListener('click', closeChat);
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !chatModal.hidden) closeChat();
+        });
+    }
+
+    if (chatForm) {
+        chatForm.querySelectorAll('[data-send-channel]').forEach((btn) => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const message = (chatTextarea.value || '').trim();
+                if (!message) {
+                    chatTextarea.focus();
+                    return;
+                }
+                const channel = btn.dataset.sendChannel;
+                if (channel === 'whatsapp') {
+                    window.open(`https://wa.me/${CONTACT_PHONE}?text=${encodeURIComponent(message)}`, '_blank', 'noopener');
+                } else if (channel === 'email') {
+                    const subject = encodeURIComponent('Message from your portfolio site');
+                    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${encodeURIComponent(message)}`;
+                }
+                chatTextarea.value = '';
+                closeChat();
+            });
+        });
+    }
+
+    /* ---------------------------------------------------------------------
        Footer year
        ------------------------------------------------------------------- */
     const footerYear = document.getElementById('footer-year');
